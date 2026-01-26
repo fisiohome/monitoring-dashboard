@@ -26,7 +26,7 @@ export default function OrdersPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("ALL");
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(20);
+    const [pageSize] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
 
     const loadOrders = useCallback(async () => {
@@ -43,7 +43,7 @@ export default function OrdersPage() {
 
             const res = await fetchOrders(params);
             const bookings = Array.isArray(res) ? res : (res.bookings || []);
-            const total = res.total || (Array.isArray(res) ? res.length : 100);
+            const total = res.meta?.total || res.meta?.total_items || res.total || (Array.isArray(res) ? res.length : 0);
 
             // Client-side filtering as fallback/enhancement
             let filtered = bookings;
@@ -230,7 +230,7 @@ export default function OrdersPage() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setPage(p => p + 1)}
-                                disabled={orders.length < pageSize || loading}
+                                disabled={page >= (Math.ceil(totalItems / pageSize) || 1) || loading}
                                 className="rounded-xl border-slate-300 hover:bg-[#6200EE] hover:text-white hover:border-[#6200EE] transition-all"
                             >
                                 Next <ChevronRight className="h-4 w-4 ml-1" />

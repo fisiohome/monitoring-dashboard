@@ -75,6 +75,12 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
     }
 
     const json = await res.json();
+
+    // Preserve meta if it exists alongside data
+    if (json.data && json.meta && typeof json.data === 'object') {
+        json.data.meta = json.meta;
+    }
+
     return json.data || json; // Handle wrapped .data structure or direct response
 }
 
