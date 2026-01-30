@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 
+import { MobileSidebar } from "@/components/MobileSidebar";
+
 export function Header() {
     const [userEmail, setUserEmail] = useState<string>("");
     const [userName, setUserName] = useState<string>("");
@@ -41,7 +43,9 @@ export function Header() {
     };
 
     return (
-        <header className="h-20 px-8 flex items-center justify-end border-b border-slate-100 bg-white">
+        <header className="h-20 px-4 md:px-8 flex items-center justify-between md:justify-end border-b border-slate-100 bg-white">
+            <MobileSidebar />
+
             {/* Actions & Profile */}
             <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">

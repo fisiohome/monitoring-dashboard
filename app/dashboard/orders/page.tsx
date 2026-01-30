@@ -1,5 +1,8 @@
 "use client";
 
+import { fetchAllPages } from "@/lib/export-utils";
+import { ExportExcelButton } from "@/components/ui/ExportExcelButton";
+
 import { useEffect, useState, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { fetchOrders } from "@/lib/api";
@@ -82,6 +85,14 @@ export default function OrdersPage() {
         }
     };
 
+    const handleExportAll = async () => {
+        const params: any = {};
+        if (statusFilter !== "ALL") {
+            params.status = statusFilter;
+        }
+        return await fetchAllPages(fetchOrders, params, "bookings");
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -127,8 +138,9 @@ export default function OrdersPage() {
 
             {/* Table Card */}
             <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white">
-                <CardHeader className="bg-gradient-to-r from-purple-50 to-white border-b border-purple-100 px-6 py-5">
+                <CardHeader className="bg-gradient-to-r from-purple-50 to-white border-b border-purple-100 px-6 py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <CardTitle className="text-lg font-bold text-[#6200EE]">Orders List</CardTitle>
+                    <ExportExcelButton data={orders} fileName="Orders" onFetchAll={handleExportAll} />
                 </CardHeader>
                 <CardContent className="p-0">
                     <div className="overflow-x-auto">
