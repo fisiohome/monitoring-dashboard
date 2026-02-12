@@ -35,6 +35,9 @@ export interface DashboardMetrics {
         failed_count: number;
         pending_stuck_count: number;
     };
+    revenue: {
+        total_this_month: number;
+    };
 }
 
 export interface StuckOrder {
@@ -114,6 +117,18 @@ export async function fetchDashboardMetrics(): Promise<DashboardMetrics> {
         const successPayments = bookings.filter((b: any) => b.payment_status === "PAID").length;
         const totalPayments = bookings.filter((b: any) => b.payment_status).length || 1;
 
+        // Calculate Revenue (This Month)
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+
+        const monthlyRevenue = bookings
+            .filter((b: any) => {
+                if (b.payment_status !== "PAID") return false;
+                const date = new Date(b.created_at || b.date);
+                return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+            })
+            .reduce((sum: number, b: any) => sum + (b.total_amount || b.total_price || 0), 0);
+
         return {
             funnel: {
                 users: 1000,
@@ -144,6 +159,9 @@ export async function fetchDashboardMetrics(): Promise<DashboardMetrics> {
                 failed_count: bookings.filter((b: any) => b.payment_status === "REFUNDED" || b.payment_status === "FAILED").length,
                 pending_stuck_count: pendingPayments.length,
             },
+            revenue: {
+                total_this_month: monthlyRevenue,
+            },
         };
     } catch (error) {
         console.error("Failed to fetch dashboard metrics", error);
@@ -153,6 +171,7 @@ export async function fetchDashboardMetrics(): Promise<DashboardMetrics> {
             auto_assign: { total: 0, success: 0, failed: 0 },
             reschedule: { total: 0, success: 0, failed: 0 },
             payment: { success_rate: 0, failed_count: 0, pending_stuck_count: 0 },
+            revenue: { total_this_month: 0 },
         };
     }
 }

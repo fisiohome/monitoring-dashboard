@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { ArrowUpRight, AlertCircle, CheckCircle, Clock, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -8,6 +8,7 @@ interface StatsCardsProps {
     data?: {
         orders: { total_today: number; success: number; stuck_count: number };
         payment: { pending_stuck_count: number };
+        revenue?: { total_this_month: number };
     }
 }
 
@@ -63,15 +64,22 @@ export function StatsCards({ data }: StatsCardsProps) {
     // Default values if data not loaded yet
     const orders = data?.orders || { total_today: 0, success: 0, stuck_count: 0 };
     const payment = data?.payment || { pending_stuck_count: 0 };
+    const revenue = data?.revenue || { total_this_month: 0 };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <StatsCard
+                title="Total Income (Month)"
+                value={revenue.total_this_month.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })}
+                subtext="Paid Revenue"
+                icon={DollarSign}
+                variant="primary"
+            />
             <StatsCard
                 title="Total Orders Today"
                 value={orders.total_today.toString()}
                 subtext="Daily Volume"
                 icon={ArrowUpRight}
-                variant="primary"
             />
             <StatsCard
                 title="Order Success"

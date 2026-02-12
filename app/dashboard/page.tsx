@@ -51,7 +51,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 {/* Main Content Area (Left 2 Columns) */}
                 <div className="xl:col-span-2 space-y-8">
-                    <StatsCards data={metrics ? { orders: metrics.orders, payment: metrics.payment } : undefined} />
+                    <StatsCards data={metrics ? { orders: metrics.orders, payment: metrics.payment, revenue: metrics.revenue } : undefined} />
 
                     {/* Charts Row */}
                     {/* Charts Row */}
