@@ -12,17 +12,18 @@ interface StatsCardsProps {
     }
 }
 
-function StatsCard({ title, value, subtext, icon: Icon, variant = "default", alert = false }: any) {
+function StatsCard({ title, value, subtext, icon: Icon, variant = "default", alert = false, className }: any) {
     const isPrimary = variant === "primary";
     const isAlert = alert;
 
     return (
         <Card className={cn(
-            "rounded-3xl border-none relative overflow-hidden h-[160px] transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
+            "rounded-3xl border-none relative overflow-hidden min-h-[160px] h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
             isPrimary
                 ? "bg-gradient-to-br from-[#6200EE] to-[#8B5CF6] text-white shadow-xl shadow-purple-500/20"
                 : "bg-white text-card-foreground shadow-sm hover:shadow-md",
-            isAlert && "border-l-4 border-l-red-500 bg-[#FFF5F5] ring-1 ring-red-100"
+            isAlert && "border-l-4 border-l-red-500 bg-[#FFF5F5] ring-1 ring-red-100",
+            className
         )}>
             {/* Background decoration for primary card */}
             {isPrimary && (
@@ -30,15 +31,15 @@ function StatsCard({ title, value, subtext, icon: Icon, variant = "default", ale
             )}
 
             <CardContent className="p-6 flex flex-col justify-between h-full relative z-10">
-                <div className="flex justify-between items-start">
-                    <span className={cn("text-sm font-medium",
+                <div className="flex justify-between items-start mb-4">
+                    <span className={cn("text-sm font-medium leading-tight mr-2",
                         isPrimary ? "text-purple-100" : "text-slate-500",
                         isAlert && "text-red-600 font-semibold"
                     )}>
                         {title}
                     </span>
                     <div className={cn(
-                        "rounded-2xl p-2.5 flex items-center justify-center w-10 h-10 transition-colors",
+                        "rounded-2xl p-2.5 flex items-center justify-center w-10 h-10 transition-colors shrink-0",
                         isPrimary ? "bg-white/20 backdrop-blur-sm text-white shadow-inner border border-white/10" : "bg-slate-50 text-slate-600",
                         isAlert && "bg-red-100 text-red-600"
                     )}>
@@ -67,13 +68,14 @@ export function StatsCards({ data }: StatsCardsProps) {
     const revenue = data?.revenue || { total_this_month: 0 };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatsCard
                 title="Total Income (Month)"
                 value={revenue.total_this_month.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })}
                 subtext="Paid Revenue"
                 icon={DollarSign}
                 variant="primary"
+                className="col-span-1 md:col-span-2 lg:col-span-4"
             />
             <StatsCard
                 title="Total Orders Today"
