@@ -8,11 +8,57 @@ const notoSans = Noto_Sans({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL || "https://monitoring.fisiohome.id";
+
 export const metadata: Metadata = {
-  title: "Fisiohome Monitoring Dashboard",
-  description: "Operational Dashboard",
+  title: {
+    default: "Fisiohome Monitoring Dashboard",
+    template: "%s | Fisiohome Monitoring Dashboard",
+  },
+  description: "Operational Dashboard for Fisiohome monitoring and management.",
+  keywords: [
+    "Fisiohome",
+    "Monitoring",
+    "Dashboard",
+    "Fisioterapi",
+    "Home Visit",
+    "Kesehatan",
+  ],
+  authors: [{ name: "Fisiohome Team" }],
+  creator: "Fisiohome",
+  publisher: "Fisiohome",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://monitoring.fisiohome.id",
+  ),
+  openGraph: {
+    title: "Fisiohome Monitoring Dashboard",
+    description:
+      "Operational Dashboard for Fisiohome monitoring and management.",
+    url: process.env.NEXT_PUBLIC_APP_URL || "https://monitoring.fisiohome.id",
+    siteName: "Fisiohome Monitoring",
+    images: [
+      {
+        url: `${appUrl}/logo.png`,
+        width: 800,
+        height: 600,
+        alt: "Fisiohome Logo",
+      },
+    ],
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fisiohome Monitoring Dashboard",
+    description:
+      "Operational Dashboard for Fisiohome monitoring and management.",
+    images: ["/logo.png"],
+  },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
 };
 
