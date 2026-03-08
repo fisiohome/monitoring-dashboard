@@ -48,6 +48,7 @@ export default function DashboardPage() {
           total_today: summary.total_orders_today,
           success: summary.order_success.count,
           stuck_count: summary.stuck_orders.count,
+          rate: summary.order_success.rate,
         },
         payment: {
           pending_stuck_count: summary.pending_payments.count,
