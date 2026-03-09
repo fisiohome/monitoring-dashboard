@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import { Suspense } from "react";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -68,12 +70,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${notoSans.variable} font-sans antialiased bg-[#F3F6F8]`}
-        suppressHydrationWarning={true}
+        suppressHydrationWarning
       >
         {children}
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { FunnelChart } from "@/components/dashboard/FunnelChart";
+import { toast } from "sonner";
 
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { ActionableOrderTable } from "@/components/dashboard/ActionableOrderTable";
@@ -28,8 +29,11 @@ export default function DashboardPage() {
         ]);
         setSummary(summaryData);
         setDailyMetrics(metricsData);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Failed to load dashboard data", error);
+        toast.error("Gagal memuat data dashboard", {
+          description: error?.message || "Terjadi kesalahan sistem.",
+        });
       } finally {
         setLoading(false);
       }
@@ -113,7 +117,7 @@ export default function DashboardPage() {
 
         {/* Right Sidebar Area (Right 1 Column) */}
         <div className="space-y-8 flex flex-col">
-          <div className="flex-1 min-h-[400px]">
+          <div className="flex-1 min-h-100">
             <ActionableOrderTable orders={stuckOrders} />
           </div>
         </div>
