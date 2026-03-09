@@ -76,16 +76,7 @@ export default function DashboardPage() {
       created_at: order.created_at,
     })) ?? [];
 
-  // Map daily metrics → FunnelChart format
-  const funnelData = dailyMetrics
-    ? {
-        users: dailyMetrics.total_users,
-        registrations: dailyMetrics.new_users_today,
-        bookings_started: dailyMetrics.total_visits_today,
-        bookings_completed: dailyMetrics.completed_visits_today,
-        payments_success: dailyMetrics.paid_orders_today,
-      }
-    : undefined;
+  const funnelData = dailyMetrics ?? undefined;
 
   return (
     <div className="space-y-8 pb-8">

@@ -236,7 +236,7 @@ export function OrderFilterBar() {
         />
 
         {/* Creator type quick-select */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           {ORDER_CREATOR_OPTIONS.map((opt) => (
             <button
               key={opt.value}

@@ -16,7 +16,7 @@ export function useAppointments() {
 
   const page = parseInt(get("page", "1")) || 1;
   const pageSize = 10;
-  const search = get("search");
+  const search = get("registration_number");
   const statusFilters = getAll("status");
   const patientNameFilter = get("patient_name");
   const therapistNameFilter = get("therapist_name");
@@ -102,6 +102,7 @@ export function useAppointments() {
   const handleExportAll = async () => {
     const params: FetchAppointmentsParams = {
       ...(statusFilters.length > 0 && { status: statusFilters.join(",") }),
+      ...(search && { registration_number: search }),
     };
     return await fetchAllPages(fetchAppointments, params, "appointments");
   };

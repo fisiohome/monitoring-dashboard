@@ -1,97 +1,228 @@
 "use client";
 
-import {
-  Bar,
-  BarChart,
-  XAxis,
-  ResponsiveContainer,
-  Cell,
-  Tooltip,
-} from "recharts";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Users, CalendarCheck } from "lucide-react";
 
-interface FunnelData {
-  users: number;
-  registrations: number;
-  bookings_started: number;
-  bookings_completed: number;
-  payments_success: number;
+interface DailyMetrics {
+  total_users: number;
+  new_users_today: number;
+  total_visits_today: number;
+  completed_visits_today: number;
 }
 
-export function FunnelChart({ data }: { data?: FunnelData }) {
-  if (!data) return null;
+function formatNumber(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return n.toLocaleString("id-ID");
+}
 
-  const chartData = [
-    { name: "Users", value: data.users, fill: "#94a3b8" },
-    { name: "Registered", value: data.registrations, fill: "#6200EE" },
-    { name: "Booking Start", value: data.bookings_started, fill: "#7C3AED" },
-    { name: "Booking Done", value: data.bookings_completed, fill: "#8B5CF6" },
-    { name: "Paid", value: data.payments_success, fill: "#A78BFA" },
-  ];
+function MetricFunnel({
+  title,
+  icon,
+  baseLabel,
+  baseValue,
+  subLabel,
+  subValue,
+  baseColor,
+  subColor,
+  baseGradientId,
+  subGradientId,
+  baseFrom,
+  baseTo,
+  subFrom,
+  subTo,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  baseLabel: string;
+  baseValue: number;
+  subLabel: string;
+  subValue: number;
+  baseColor: string;
+  subColor: string;
+  baseGradientId: string;
+  subGradientId: string;
+  baseFrom: string;
+  baseTo: string;
+  subFrom: string;
+  subTo: string;
+}) {
+  const subPct =
+    baseValue > 0 ? Math.min((subValue / baseValue) * 100, 100) : 0;
 
   return (
-    <Card className="rounded-3xl border-none shadow-sm xl:col-span-2 bg-white h-full">
-      <CardContent>
-        <div className="h-62.5 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} barSize={60}>
-              <defs>
-                <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#94a3b8" stopOpacity={0.4} />
-                </linearGradient>
-                <linearGradient id="colorReg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6200EE" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#6200EE" stopOpacity={0.4} />
-                </linearGradient>
-                <linearGradient id="colorBook" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#7C3AED" stopOpacity={0.4} />
-                </linearGradient>
-                <linearGradient id="colorDone" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.4} />
-                </linearGradient>
-                <linearGradient id="colorPaid" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#A78BFA" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#A78BFA" stopOpacity={0.4} />
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="name"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#64748b", fontSize: 11, fontWeight: 500 }}
-                dy={10}
-              />
-              <Tooltip
-                cursor={{ fill: "#f8fafc", opacity: 0.6 }}
-                contentStyle={{
-                  borderRadius: "16px",
-                  border: "none",
-                  boxShadow:
-                    "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-                  padding: "12px 16px",
-                  backgroundColor: "white",
-                }}
-                itemStyle={{ fontWeight: 600, color: "#334155" }}
-              />
-              <Bar dataKey="value" radius={[12, 12, 12, 12]}>
-                {chartData.map((entry, index) => {
-                  // Map index to gradient ID
-                  let fillId = "colorUsers";
-                  if (index === 1) fillId = "colorReg";
-                  if (index === 2) fillId = "colorBook";
-                  if (index === 3) fillId = "colorDone";
-                  if (index === 4) fillId = "colorPaid";
+    <div className="flex flex-col gap-4">
+      {/* Title */}
+      <div className="flex items-center gap-2">
+        <div
+          className="w-7 h-7 rounded-lg flex items-center justify-center"
+          style={{ background: `${baseFrom}18` }}
+        >
+          <span style={{ color: baseFrom }}>{icon}</span>
+        </div>
+        <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+          {title}
+        </span>
+      </div>
 
-                  return (
-                    <Cell key={`cell-${index}`} fill={`url(#${fillId})`} />
-                  );
-                })}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+      {/* Base metric */}
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex-1">
+          <p className="text-xs text-slate-400 mb-1">{baseLabel}</p>
+          <div className="h-3 w-full rounded-full overflow-hidden bg-slate-100">
+            <div
+              className="h-full w-full rounded-full"
+              style={{
+                background: `linear-gradient(to right, ${baseFrom}, ${baseTo})`,
+              }}
+            />
+          </div>
+        </div>
+        <span
+          className="text-xl font-bold shrink-0 tabular-nums"
+          style={{ color: baseFrom }}
+        >
+          {formatNumber(baseValue)}
+        </span>
+      </div>
+
+      {/* Sub metric */}
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-xs text-slate-400">{subLabel}</p>
+            <span className="text-[10px] font-bold text-slate-400">
+              {subPct.toFixed(1)}%
+            </span>
+          </div>
+          <div className="h-3 w-full rounded-full overflow-hidden bg-slate-100">
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{
+                width: `${subPct}%`,
+                background: `linear-gradient(to right, ${subFrom}, ${subTo})`,
+              }}
+            />
+          </div>
+        </div>
+        <span
+          className="text-xl font-bold shrink-0 tabular-nums"
+          style={{ color: subFrom }}
+        >
+          {formatNumber(subValue)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function FunnelChart({ data }: { data?: DailyMetrics }) {
+  if (!data) return null;
+
+  const visitCompletionRate =
+    data.total_visits_today > 0
+      ? ((data.completed_visits_today / data.total_visits_today) * 100).toFixed(
+          1,
+        )
+      : "0";
+
+  const newUserRate =
+    data.total_users > 0
+      ? ((data.new_users_today / data.total_users) * 100).toFixed(2)
+      : "0";
+
+  return (
+    <Card className="rounded-3xl border-none shadow-sm xl:col-span-2 bg-white h-full overflow-hidden">
+      <CardHeader className="pb-3 pt-5 px-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">
+              Today's Overview
+            </p>
+            <p className="text-2xl font-bold text-slate-800 leading-tight">
+              {visitCompletionRate}%
+              <span className="text-sm font-normal text-slate-400 ml-2">
+                visit completion rate
+              </span>
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-slate-400 mb-0.5">New users</p>
+            <p className="text-sm font-bold text-[#6200EE]">
+              +{data.new_users_today}
+              <span className="text-xs font-normal text-slate-400 ml-1">
+                ({newUserRate}%)
+              </span>
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="px-6 pb-6 pt-1">
+        <div className="h-px bg-slate-100 mb-5" />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Users funnel */}
+          <MetricFunnel
+            title="Users"
+            icon={<Users className="h-3.5 w-3.5" />}
+            baseLabel="Total users"
+            baseValue={data.total_users}
+            subLabel="New today"
+            subValue={data.new_users_today}
+            baseColor="#6200EE"
+            subColor="#7C3AED"
+            baseGradientId="usersBase"
+            subGradientId="usersSub"
+            baseFrom="#6200EE"
+            baseTo="#7C3AED"
+            subFrom="#A78BFA"
+            subTo="#C4B5FD"
+          />
+
+          {/* Visits funnel */}
+          <MetricFunnel
+            title="Visits"
+            icon={<CalendarCheck className="h-3.5 w-3.5" />}
+            baseLabel="Total visits today"
+            baseValue={data.total_visits_today}
+            subLabel="Completed"
+            subValue={data.completed_visits_today}
+            baseColor="#0ea5e9"
+            subColor="#0284c7"
+            baseGradientId="visitsBase"
+            subGradientId="visitsSub"
+            baseFrom="#0ea5e9"
+            baseTo="#38bdf8"
+            subFrom="#0284c7"
+            subTo="#0ea5e9"
+          />
+        </div>
+
+        {/* Bottom summary strip */}
+        <div className="mt-6 grid grid-cols-2 gap-3">
+          <div className="bg-purple-50 rounded-2xl px-4 py-3">
+            <p className="text-xs text-purple-400 font-medium mb-0.5">
+              Total Users
+            </p>
+            <p className="text-lg font-bold text-[#6200EE]">
+              {formatNumber(data.total_users)}
+            </p>
+            <p className="text-xs text-purple-300 mt-0.5">
+              +{data.new_users_today} hari ini
+            </p>
+          </div>
+          <div className="bg-sky-50 rounded-2xl px-4 py-3">
+            <p className="text-xs text-sky-400 font-medium mb-0.5">
+              Visits Today
+            </p>
+            <p className="text-lg font-bold text-sky-600">
+              {formatNumber(data.total_visits_today)}
+            </p>
+            <p className="text-xs text-sky-300 mt-0.5">
+              {data.completed_visits_today} selesai
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>

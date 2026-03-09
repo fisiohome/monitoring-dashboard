@@ -38,8 +38,8 @@ export function useOrders() {
           ...(statusFilters.length > 1 && { status: statusFilters.join(",") }),
           ...(creatorTypeFilter && { creator_type: creatorTypeFilter }),
           ...(patientNameFilter && { patient_name: patientNameFilter }),
-          ...(registrationNumberFilter && {
-            registration_number: registrationNumberFilter,
+          ...((search || registrationNumberFilter) && {
+            registration_number: search || registrationNumberFilter,
           }),
           ...(orderStartDateFilter && {
             order_start_date: orderStartDateFilter,
@@ -54,18 +54,6 @@ export function useOrders() {
           res.meta?.total_items ??
           res.total ??
           (Array.isArray(res) ? res.length : 0);
-
-        // Client-side search fallback
-        if (search) {
-          const lower = search.toLowerCase();
-          bookings = bookings.filter(
-            (b: any) =>
-              (b.patient?.name ?? "").toLowerCase().includes(lower) ||
-              (b.user?.email ?? "").toLowerCase().includes(lower) ||
-              (b.id ?? "").toLowerCase().includes(lower) ||
-              (b.registration_number ?? "").toLowerCase().includes(lower),
-          );
-        }
 
         setOrders(bookings);
         setTotalItems(total);
@@ -91,8 +79,8 @@ export function useOrders() {
       ...(statusFilters.length > 0 && { status: statusFilters.join(",") }),
       ...(creatorTypeFilter && { creator_type: creatorTypeFilter }),
       ...(patientNameFilter && { patient_name: patientNameFilter }),
-      ...(registrationNumberFilter && {
-        registration_number: registrationNumberFilter,
+      ...((search || registrationNumberFilter) && {
+        registration_number: search || registrationNumberFilter,
       }),
       ...(orderStartDateFilter && { order_start_date: orderStartDateFilter }),
       ...(orderEndDateFilter && { order_end_date: orderEndDateFilter }),

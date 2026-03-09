@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Appointment } from "@/lib/types/appointment";
 
 function AppointmentsPageInner() {
   const {
@@ -64,10 +65,11 @@ function AppointmentsPageInner() {
               <TableRow className="border-b border-slate-100 hover:bg-transparent">
                 {[
                   "Registration No.",
+                  "Visit",
                   "Patient",
+                  "Therapist",
                   "Service",
                   "Package",
-                  "Visit",
                   "Location",
                   "Status",
                   "",
@@ -110,13 +112,21 @@ function AppointmentsPageInner() {
                   </TableCell>
                 </TableRow>
               ) : (
-                appointments.map((apt, i) => (
+                appointments.map((apt: Appointment, i: number) => (
                   <TableRow
                     key={apt.id}
                     className={`group border-b border-slate-50 hover:bg-violet-50/40 transition-colors ${i % 2 === 1 ? "bg-slate-50/30" : ""}`}
                   >
                     <TableCell className="py-3.5 px-5 font-mono text-xs font-semibold text-violet-700">
                       {apt.registration_number || apt.id?.slice(0, 8)}
+                    </TableCell>
+                    <TableCell className="py-3.5 px-5">
+                      <p className="text-sm font-medium text-slate-800">
+                        Visit {apt.visit_number}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        of {apt.total_visits_in_booking}
+                      </p>
                     </TableCell>
                     <TableCell className="py-3.5 px-5">
                       <p className="text-sm font-medium text-slate-800 leading-tight">
@@ -132,6 +142,25 @@ function AppointmentsPageInner() {
                       </p>
                     </TableCell>
                     <TableCell className="py-3.5 px-5">
+                      {apt.therapist ? (
+                        <>
+                          <p className="text-sm font-medium text-slate-800 leading-tight">
+                            {apt.therapist.full_name}
+                          </p>
+                          <p className="text-xs text-slate-400 mt-0.5">
+                            {apt.therapist.registration_number}
+                          </p>
+                          <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 capitalize">
+                            {apt.therapist.therapist_type}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-xs text-slate-400 italic">
+                          Unassigned
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="py-3.5 px-5">
                       <span className="inline-block px-2 py-0.5 rounded-md bg-violet-50 text-violet-700 text-xs font-medium">
                         {apt.service_name?.replace(/_/g, " ") || "—"}
                       </span>
@@ -139,14 +168,7 @@ function AppointmentsPageInner() {
                     <TableCell className="py-3.5 px-5 text-sm text-slate-600">
                       {apt.package_name || "—"}
                     </TableCell>
-                    <TableCell className="py-3.5 px-5">
-                      <p className="text-sm font-medium text-slate-800">
-                        Visit {apt.visit_number}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        of {apt.total_visits_in_booking}
-                      </p>
-                    </TableCell>
+
                     <TableCell className="py-3.5 px-5 text-xs text-slate-500">
                       <p>{apt.address?.city || "—"}</p>
                       <p className="text-slate-400">{apt.address?.state}</p>

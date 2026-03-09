@@ -14,7 +14,7 @@ export function AppointmentFilterBar() {
   const { get, getAll, set, clear } = useFilterParams();
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const search = get("search");
+  const search = get("registration_number");
   const statusFilters = getAll("status");
   const patientNameFilter = get("patient_name");
   const therapistNameFilter = get("therapist_name");
@@ -146,9 +146,11 @@ export function AppointmentFilterBar() {
             defaultValue={search}
             onKeyDown={(e) => {
               if (e.key === "Enter")
-                set({ search: (e.target as HTMLInputElement).value });
+                set({
+                  registration_number: (e.target as HTMLInputElement).value,
+                });
             }}
-            onBlur={(e) => set({ search: e.target.value })}
+            onBlur={(e) => set({ registration_number: e.target.value })}
             className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 transition placeholder:text-slate-400"
           />
         </div>
