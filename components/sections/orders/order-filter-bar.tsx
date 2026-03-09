@@ -48,7 +48,7 @@ function StatusMultiSelect({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm border transition min-w-35 justify-between flex-shrink-0",
+            "inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm border transition min-w-35 justify-between shrink-0",
             selected.length > 0
               ? "bg-violet-50 border-violet-200 text-violet-800"
               : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300",
@@ -262,7 +262,7 @@ export function OrderFilterBar() {
         <button
           onClick={() => setShowAdvanced((v) => !v)}
           className={cn(
-            "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium border transition flex-shrink-0",
+            "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium border transition shrink-0",
             showAdvanced
               ? "bg-violet-50 border-violet-200 text-violet-700"
               : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300",
@@ -294,7 +294,7 @@ export function OrderFilterBar() {
         {activeFilters.length > 0 && (
           <button
             onClick={clear}
-            className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 border border-transparent hover:border-red-100 transition flex-shrink-0"
+            className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 border border-transparent hover:border-red-100 transition shrink-0"
           >
             <X className="h-3.5 w-3.5" />
             Clear

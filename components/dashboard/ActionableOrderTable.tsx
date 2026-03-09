@@ -46,7 +46,7 @@ export function ActionableOrderTable({ orders }: { orders?: StuckOrder[] }) {
                                     </Button>
                                     <Button
                                         size="sm"
-                                        className="h-9 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-xs font-semibold shadow-md shadow-red-200"
+                                        className="h-9 rounded-xl bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-xs font-semibold shadow-md shadow-red-200"
                                         onClick={() => {
                                             if (order.customer_phone) {
                                                 const cleanPhone = order.customer_phone.replace(/\D/g, '');

@@ -133,8 +133,8 @@ export default function AppointmentDetailPage() {
       </div>
 
       {/* ── Hero Header ── */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#6200EE] via-[#7722FF] to-[#9747FF] p-6 md:p-8 text-white shadow-lg shadow-purple-200">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top_right,_#fff_0%,_transparent_70%)]" />
+      <div className="relative rounded-3xl overflow-hidden bg-linear-to-br from-[#6200EE] via-[#7722FF] to-[#9747FF] p-6 md:p-8 text-white shadow-lg shadow-purple-200">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top_right,#fff_0%,transparent_70%)]" />
         <div className="absolute bottom-0 right-0 p-8 opacity-10">
           <Activity className="h-40 w-40 rotate-12" />
         </div>
@@ -225,7 +225,7 @@ export default function AppointmentDetailPage() {
           >
             <div className="flex flex-col sm:flex-row gap-5">
               {/* Avatar placeholder */}
-              <div className="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center flex-shrink-0">
+              <div className="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
                 <UserCheck className="h-7 w-7 text-teal-500" />
               </div>
               <div className="flex-1">
@@ -755,9 +755,7 @@ function Lightbox({
 
       {/* Bottom info bar */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/50 backdrop-blur-sm text-white text-xs px-5 py-2.5 rounded-full">
-        <span className="font-medium truncate max-w-[200px]">
-          {photo.file_name}
-        </span>
+        <span className="font-medium truncate max-w-50">{photo.file_name}</span>
         <span className="text-white/50">·</span>
         <span className="text-white/70">
           {(photo.file_size / 1024).toFixed(0)} KB
@@ -882,10 +880,10 @@ function StatusBadge({
 
 function VisitStatusIcon({ status }: { status: string }) {
   if (status === "COMPLETED")
-    return <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />;
+    return <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />;
   if (status === "CANCELLED")
-    return <AlertCircle className="h-4 w-4 text-red-400 flex-shrink-0" />;
-  return <Circle className="h-4 w-4 text-slate-300 flex-shrink-0" />;
+    return <AlertCircle className="h-4 w-4 text-red-400 shrink-0" />;
+  return <Circle className="h-4 w-4 text-slate-300 shrink-0" />;
 }
 
 function formatIDR(amount: number) {

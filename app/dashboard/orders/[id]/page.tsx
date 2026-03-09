@@ -229,8 +229,8 @@ export default function OrderDetailPage() {
       </div>
 
       {/* ── Hero Header ── */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#6200EE] via-[#7722FF] to-[#9747FF] p-6 md:p-8 text-white shadow-lg shadow-purple-200">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top_right,_#fff_0%,_transparent_70%)]" />
+      <div className="relative rounded-3xl overflow-hidden bg-linear-to-br from-[#6200EE] via-[#7722FF] to-[#9747FF] p-6 md:p-8 text-white shadow-lg shadow-purple-200">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top_right,#fff_0%,transparent_70%)]" />
         <div className="absolute bottom-0 right-0 p-8 opacity-10">
           <Activity className="h-40 w-40 rotate-12" />
         </div>

@@ -38,9 +38,9 @@ function StatsCard({
   return (
     <Card
       className={cn(
-        "rounded-3xl border-none relative overflow-hidden min-h-[160px] h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
+        "rounded-3xl border-none relative overflow-hidden min-h-40 h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
         isPrimary
-          ? "bg-gradient-to-br from-[#6200EE] to-[#8B5CF6] text-white shadow-xl shadow-purple-500/20"
+          ? "bg-linear-to-br from-[#6200EE] to-[#8B5CF6] text-white shadow-xl shadow-purple-500/20"
           : "bg-white text-card-foreground shadow-sm hover:shadow-md",
         isAlert &&
           "border-l-4 border-l-red-500 bg-[#FFF5F5] ring-1 ring-red-100",
