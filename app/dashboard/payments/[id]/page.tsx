@@ -7,6 +7,7 @@ import { fetchOrderById } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import {
   ChevronLeft,
   Calendar,
@@ -108,12 +109,18 @@ export default function PaymentDetailPage() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Payment Details</h1>
-          <p className="text-slate-500 text-sm">
-            ID:{" "}
-            <span className="font-mono text-[#6200EE]">
-              {payment.registration_number || payment.id}
-            </span>
-          </p>
+          <div className="flex items-center gap-2 group/copy">
+            <p className="text-slate-500 text-sm">
+              ID:{" "}
+              <span className="font-mono text-[#6200EE]">
+                {payment.registration_number || payment.id}
+              </span>
+            </p>
+            <CopyButton
+              value={payment.registration_number || payment.id}
+              className="opacity-0 group-hover/copy:opacity-100 transition-opacity h-6 w-6 p-1"
+            />
+          </div>
         </div>
         <div className="ml-auto">
           <Badge
@@ -180,9 +187,15 @@ export default function PaymentDetailPage() {
                 <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                   Payment ID
                 </span>
-                <p className="font-mono text-sm text-slate-700 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100">
-                  {payment.id}
-                </p>
+                <div className="flex items-center gap-2 group/copy bg-slate-50 px-3 py-2 rounded-lg border border-slate-100">
+                  <p className="font-mono text-sm text-slate-700 truncate">
+                    {payment.id}
+                  </p>
+                  <CopyButton
+                    value={payment.id}
+                    className="opacity-0 group-hover/copy:opacity-100 transition-opacity ml-auto h-6 w-6 p-1 shadow-sm bg-white"
+                  />
+                </div>
               </div>
               <div className="space-y-1">
                 <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">

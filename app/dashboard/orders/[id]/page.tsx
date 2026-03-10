@@ -8,6 +8,7 @@ import { id as idLocale } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { CopyButton } from "@/components/ui/copy-button";
 import { Progress } from "@/components/ui/progress";
 import {
   ArrowLeft,
@@ -208,7 +209,11 @@ export default function OrderDetailPage() {
     format(new Date(dt), "dd MMM yyyy, HH:mm", { locale: idLocale });
 
   const uniqueTherapists = Array.from(
-    new Map(sortedVisits.map((v) => [v.therapist.id, v.therapist])).values(),
+    new Map(
+      sortedVisits
+        .filter((v) => v.therapist != null)
+        .map((v) => [v.therapist.id, v.therapist]),
+    ).values(),
   );
 
   return (
@@ -237,13 +242,25 @@ export default function OrderDetailPage() {
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold tracking-tight">
-                {order.registration_number}
-              </h1>
+              <div className="flex items-center gap-2 group/copy">
+                <h1 className="text-3xl font-bold tracking-tight">
+                  {order.registration_number}
+                </h1>
+                <CopyButton
+                  value={order.registration_number}
+                  className="opacity-0 group-hover/copy:opacity-100 transition-opacity text-white/70 hover:text-white hover:bg-white/20"
+                />
+              </div>
               <StatusBadge status={order.status} />
               <PaymentBadge status={order.payment_status} />
             </div>
-            <p className="text-white/70 font-mono text-xs">{order.id}</p>
+            <div className="flex items-center gap-2 group/copy">
+              <p className="text-white/70 font-mono text-xs">{order.id}</p>
+              <CopyButton
+                value={order.id}
+                className="opacity-0 group-hover/copy:opacity-100 transition-opacity text-white/50 hover:text-white hover:bg-white/20 h-5 w-5 p-0.5"
+              />
+            </div>
           </div>
           <div className="bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-3 border border-white/20 shrink-0">
             <p className="text-white/70 text-xs uppercase tracking-wider mb-1">
@@ -305,100 +322,128 @@ export default function OrderDetailPage() {
 
           {/* Therapists */}
           <SectionCard title="Terapis">
-            <div className="space-y-5">
-              {uniqueTherapists.map((therapist, i) => (
-                <div key={therapist.id}>
-                  {i > 0 && <Separator className="mb-5" />}
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
-                      <Stethoscope className="h-6 w-6 text-teal-500" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <p className="text-base font-bold text-slate-900">
-                          {therapist.full_name}
-                        </p>
-                        <Badge
-                          variant="outline"
-                          className="text-xs text-slate-500 border-slate-200"
-                        >
-                          {therapist.registration_number}
-                        </Badge>
-                        <Badge
-                          variant="outline"
-                          className={`text-xs font-medium ${
-                            therapist.employment_status === "ACTIVE"
-                              ? "bg-green-100 text-green-700 border-green-200"
-                              : "bg-slate-100 text-slate-600"
-                          }`}
-                        >
-                          {therapist.employment_status}
-                        </Badge>
+            {uniqueTherapists.length > 0 ? (
+              <div className="space-y-5">
+                {uniqueTherapists.map((therapist, i) => (
+                  <div key={therapist.id}>
+                    {i > 0 && <Separator className="mb-5" />}
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
+                        <Stethoscope className="h-6 w-6 text-teal-500" />
                       </div>
-                      <div className="flex flex-wrap gap-2 text-sm text-slate-500 mb-2">
-                        <span className="capitalize">
-                          {therapist.gender.toLowerCase()}
-                        </span>
-                        <span>·</span>
-                        <span>Batch {therapist.batch}</span>
-                        <span>·</span>
-                        <span>{therapist.employment_type}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        <a
-                          href={`tel:${therapist.phone_number}`}
-                          className="flex items-center gap-1.5 text-xs text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full"
-                        >
-                          <Phone className="h-3 w-3" />
-                          {therapist.phone_number}
-                        </a>
-                        <a
-                          href={`mailto:${therapist.email}`}
-                          className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full"
-                        >
-                          <Mail className="h-3 w-3" />
-                          {therapist.email}
-                        </a>
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        {therapist.specializations.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 items-center">
-                            <span className="text-xs text-slate-400 uppercase tracking-wide mr-1">
-                              Spesialisasi
-                            </span>
-                            {therapist.specializations.map((s) => (
-                              <Badge
-                                key={s}
-                                variant="secondary"
-                                className="bg-blue-50 text-blue-700 text-xs"
-                              >
-                                {s}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                        {therapist.modalities.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 items-center">
-                            <span className="text-xs text-slate-400 uppercase tracking-wide mr-1">
-                              Modalitas
-                            </span>
-                            {therapist.modalities.map((m) => (
-                              <Badge
-                                key={m}
-                                variant="secondary"
-                                className="bg-orange-50 text-orange-700 text-xs"
-                              >
-                                {m}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <p className="text-base font-bold text-slate-900">
+                            {therapist.full_name}
+                          </p>
+                          <Badge
+                            variant="outline"
+                            className="text-xs text-slate-500 border-slate-200"
+                          >
+                            {therapist.registration_number}
+                          </Badge>
+                          <Badge
+                            variant="outline"
+                            className={`text-xs font-medium ${
+                              therapist.employment_status === "ACTIVE"
+                                ? "bg-green-100 text-green-700 border-green-200"
+                                : "bg-slate-100 text-slate-600"
+                            }`}
+                          >
+                            {therapist.employment_status}
+                          </Badge>
+                        </div>
+                        <div className="flex flex-wrap gap-2 text-sm text-slate-500 mb-2">
+                          {therapist.gender && (
+                            <>
+                              <span className="capitalize">
+                                {therapist.gender.toLowerCase()}
+                              </span>
+                              <span>·</span>
+                            </>
+                          )}
+                          {therapist.batch && (
+                            <>
+                              <span>Batch {therapist.batch}</span>
+                              <span>·</span>
+                            </>
+                          )}
+                          {therapist.employment_type && (
+                            <span>{therapist.employment_type}</span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {therapist.phone_number && (
+                            <a
+                              href={`tel:${therapist.phone_number}`}
+                              className="flex items-center gap-1.5 text-xs text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full"
+                            >
+                              <Phone className="h-3 w-3" />
+                              {therapist.phone_number}
+                            </a>
+                          )}
+                          {therapist.email && (
+                            <a
+                              href={`mailto:${therapist.email}`}
+                              className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full"
+                            >
+                              <Mail className="h-3 w-3" />
+                              {therapist.email}
+                            </a>
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          {therapist.specializations?.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 items-center">
+                              <span className="text-xs text-slate-400 uppercase tracking-wide mr-1">
+                                Spesialisasi
+                              </span>
+                              {therapist.specializations.map((s) => (
+                                <Badge
+                                  key={s}
+                                  variant="secondary"
+                                  className="bg-blue-50 text-blue-700 text-xs"
+                                >
+                                  {s}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                          {therapist.modalities?.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 items-center">
+                              <span className="text-xs text-slate-400 uppercase tracking-wide mr-1">
+                                Modalitas
+                              </span>
+                              {therapist.modalities.map((m) => (
+                                <Badge
+                                  key={m}
+                                  variant="secondary"
+                                  className="bg-orange-50 text-orange-700 text-xs"
+                                >
+                                  {m}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
+                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+                  <Stethoscope className="h-6 w-6 text-slate-400" />
                 </div>
-              ))}
-            </div>
+                <p className="text-sm font-semibold text-slate-700">
+                  Belum Ada Terapis
+                </p>
+                <p className="text-xs text-slate-500 mt-1 max-w-[250px]">
+                  Terapis belum ditugaskan untuk pesanan ini.
+                </p>
+              </div>
+            )}
           </SectionCard>
 
           {/* Location */}
@@ -662,7 +707,7 @@ function VisitRow({
             </span>
             <span className="flex items-center gap-1 truncate">
               <Stethoscope className="h-3 w-3 shrink-0" />
-              {visit.therapist.full_name}
+              {visit.therapist?.full_name || "Belum ada terapis"}
             </span>
           </div>
         </div>
@@ -692,40 +737,51 @@ function VisitRow({
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
               Terapis
             </p>
-            <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
-                <Stethoscope className="h-4 w-4 text-teal-500" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-slate-800">
-                  {visit.therapist.full_name}
-                </p>
-                <p className="text-xs text-slate-400">
-                  {visit.therapist.registration_number} · Batch{" "}
-                  {visit.therapist.batch}
-                </p>
-                <div className="flex flex-wrap gap-1 mt-1.5">
-                  {visit.therapist.specializations.map((s) => (
-                    <Badge
-                      key={s}
-                      variant="secondary"
-                      className="text-xs bg-blue-50 text-blue-700"
-                    >
-                      {s}
-                    </Badge>
-                  ))}
-                  {visit.therapist.modalities.map((m) => (
-                    <Badge
-                      key={m}
-                      variant="secondary"
-                      className="text-xs bg-orange-50 text-orange-700"
-                    >
-                      {m}
-                    </Badge>
-                  ))}
+            {visit.therapist ? (
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
+                  <Stethoscope className="h-4 w-4 text-teal-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-800">
+                    {visit.therapist.full_name}
+                  </p>
+                  <p className="text-xs text-slate-400">
+                    {visit.therapist.registration_number} · Batch{" "}
+                    {visit.therapist.batch}
+                  </p>
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {visit.therapist.specializations?.map((s) => (
+                      <Badge
+                        key={s}
+                        variant="secondary"
+                        className="text-xs bg-blue-50 text-blue-700"
+                      >
+                        {s}
+                      </Badge>
+                    ))}
+                    {visit.therapist.modalities?.map((m) => (
+                      <Badge
+                        key={m}
+                        variant="secondary"
+                        className="text-xs bg-orange-50 text-orange-700"
+                      >
+                        {m}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                  <Stethoscope className="h-4 w-4 text-slate-400" />
+                </div>
+                <p className="text-sm font-medium text-slate-500">
+                  Belum ada terapis
+                </p>
+              </div>
+            )}
           </div>
 
           {/* SOAP */}

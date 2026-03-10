@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { CopyButton } from "@/components/ui/copy-button";
 import {
   ArrowLeft,
   User,
@@ -141,9 +142,17 @@ export default function AppointmentDetailPage() {
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold tracking-tight">
-                {registration_number || "Appointment Details"}
-              </h1>
+              <div className="flex items-center gap-2 group/copy">
+                <h1 className="text-3xl font-bold tracking-tight">
+                  {registration_number || "Appointment Details"}
+                </h1>
+                {registration_number && (
+                  <CopyButton
+                    value={registration_number}
+                    className="opacity-0 group-hover/copy:opacity-100 transition-opacity text-white/70 hover:text-white hover:bg-white/20"
+                  />
+                )}
+              </div>
               <StatusBadge status={status} />
               {is_final_visit && (
                 <Badge className="bg-yellow-400 text-yellow-900 border-0 font-bold">
@@ -151,7 +160,13 @@ export default function AppointmentDetailPage() {
                 </Badge>
               )}
             </div>
-            <p className="text-white/70 font-mono text-xs">{id}</p>
+            <div className="flex items-center gap-2 group/copy">
+              <p className="text-white/70 font-mono text-xs">{id}</p>
+              <CopyButton
+                value={id}
+                className="opacity-0 group-hover/copy:opacity-100 transition-opacity text-white/50 hover:text-white hover:bg-white/20 h-5 w-5 p-0.5"
+              />
+            </div>
             {fisiohome_partner_booking && (
               <Badge className="mt-2 bg-white/20 text-white border-white/30 text-xs">
                 Partner Booking
@@ -223,102 +238,130 @@ export default function AppointmentDetailPage() {
             iconBg="bg-teal-100 text-teal-600"
             title="Therapist"
           >
-            <div className="flex flex-col sm:flex-row gap-5">
-              {/* Avatar placeholder */}
-              <div className="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
-                <UserCheck className="h-7 w-7 text-teal-500" />
-              </div>
-              <div className="flex-1">
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <p className="text-lg font-bold text-slate-900">
-                    {therapist?.full_name}
-                  </p>
-                  <Badge
-                    variant="outline"
-                    className="text-xs text-slate-500 border-slate-200"
-                  >
-                    {therapist?.registration_number}
-                  </Badge>
-                  <Badge
-                    className={`text-xs font-medium ${
-                      therapist?.employment_status === "ACTIVE"
-                        ? "bg-green-100 text-green-700 border-green-200"
-                        : "bg-slate-100 text-slate-600"
-                    }`}
-                    variant="outline"
-                  >
-                    {therapist?.employment_status}
-                  </Badge>
+            {therapist ? (
+              <div className="flex flex-col sm:flex-row gap-5">
+                {/* Avatar placeholder */}
+                <div className="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0">
+                  <UserCheck className="h-7 w-7 text-teal-500" />
                 </div>
-                <div className="flex flex-wrap gap-2 text-sm text-slate-500 mb-3">
-                  <span className="capitalize">
-                    {therapist?.gender?.toLowerCase()}
-                  </span>
-                  <span>·</span>
-                  <span>Batch {therapist?.batch}</span>
-                  <span>·</span>
-                  <span>{therapist?.employment_type}</span>
-                  <span>·</span>
-                  <span className="capitalize">
-                    {therapist?.therapist_type}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {therapist?.phone_number && (
-                    <a
-                      href={`tel:${therapist.phone_number}`}
-                      className="flex items-center gap-1.5 text-xs text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full"
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <p className="text-lg font-bold text-slate-900">
+                      {therapist.full_name}
+                    </p>
+                    <Badge
+                      variant="outline"
+                      className="text-xs text-slate-500 border-slate-200"
                     >
-                      <Phone className="h-3 w-3" />
-                      {therapist.phone_number}
-                    </a>
-                  )}
-                  {therapist?.email && (
-                    <a
-                      href={`mailto:${therapist.email}`}
-                      className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full"
+                      {therapist.registration_number}
+                    </Badge>
+                    <Badge
+                      className={`text-xs font-medium ${
+                        therapist.employment_status === "ACTIVE"
+                          ? "bg-green-100 text-green-700 border-green-200"
+                          : "bg-slate-100 text-slate-600"
+                      }`}
+                      variant="outline"
                     >
-                      <Mail className="h-3 w-3" />
-                      {therapist.email}
-                    </a>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  {therapist?.specializations?.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 items-center">
-                      <span className="text-xs text-slate-400 uppercase tracking-wide mr-1">
-                        Specializations
+                      {therapist.employment_status}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-sm text-slate-500 mb-3">
+                    {therapist.gender && (
+                      <>
+                        <span className="capitalize">
+                          {therapist.gender.toLowerCase()}
+                        </span>
+                        <span>·</span>
+                      </>
+                    )}
+                    {therapist.batch && (
+                      <>
+                        <span>Batch {therapist.batch}</span>
+                        <span>·</span>
+                      </>
+                    )}
+                    {therapist.employment_type && (
+                      <>
+                        <span>{therapist.employment_type}</span>
+                        <span>·</span>
+                      </>
+                    )}
+                    {therapist.therapist_type && (
+                      <span className="capitalize">
+                        {therapist.therapist_type}
                       </span>
-                      {therapist.specializations.map((s: string) => (
-                        <Badge
-                          key={s}
-                          variant="secondary"
-                          className="bg-blue-50 text-blue-700 text-xs capitalize"
-                        >
-                          {s}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  {therapist?.modalities?.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 items-center">
-                      <span className="text-xs text-slate-400 uppercase tracking-wide mr-1">
-                        Modalities
-                      </span>
-                      {therapist.modalities.map((m: string) => (
-                        <Badge
-                          key={m}
-                          variant="secondary"
-                          className="bg-orange-50 text-orange-700 text-xs"
-                        >
-                          {m}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {therapist.phone_number && (
+                      <a
+                        href={`tel:${therapist.phone_number}`}
+                        className="flex items-center gap-1.5 text-xs text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full"
+                      >
+                        <Phone className="h-3 w-3" />
+                        {therapist.phone_number}
+                      </a>
+                    )}
+                    {therapist.email && (
+                      <a
+                        href={`mailto:${therapist.email}`}
+                        className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full"
+                      >
+                        <Mail className="h-3 w-3" />
+                        {therapist.email}
+                      </a>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    {therapist.specializations?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 items-center">
+                        <span className="text-xs text-slate-400 uppercase tracking-wide mr-1">
+                          Specializations
+                        </span>
+                        {therapist.specializations.map((s: string) => (
+                          <Badge
+                            key={s}
+                            variant="secondary"
+                            className="bg-blue-50 text-blue-700 text-xs capitalize"
+                          >
+                            {s}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    {therapist.modalities?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 items-center">
+                        <span className="text-xs text-slate-400 uppercase tracking-wide mr-1">
+                          Modalities
+                        </span>
+                        {therapist.modalities.map((m: string) => (
+                          <Badge
+                            key={m}
+                            variant="secondary"
+                            className="bg-orange-50 text-orange-700 text-xs"
+                          >
+                            {m}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
+                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+                  <UserCheck className="h-6 w-6 text-slate-400" />
+                </div>
+                <p className="text-sm font-semibold text-slate-700">
+                  No Therapist Assigned
+                </p>
+                <p className="text-xs text-slate-500 mt-1 max-w-[250px]">
+                  A therapist has not been assigned to this appointment yet.
+                </p>
+              </div>
+            )}
           </SectionCard>
 
           {/* Location */}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useAppointments } from "@/lib/hooks/use-appointments";
+import { CopyButton } from "@/components/ui/copy-button";
 import { AppointmentFilterBar } from "@/components/sections/appointmets/appointment-filter-bar";
 import { StatusBadge } from "@/components/sections/appointmets/status-badge";
 import { ExportExcelButton } from "@/components/ui/ExportExcelButton";
@@ -121,7 +122,15 @@ function AppointmentsPageInner() {
                     className={`group border-b border-slate-50 hover:bg-violet-50/40 transition-colors ${i % 2 === 1 ? "bg-slate-50/30" : ""}`}
                   >
                     <TableCell className="py-3.5 px-5 font-mono text-xs font-semibold text-violet-700">
-                      {apt.registration_number || apt.id?.slice(0, 8)}
+                      <div className="flex items-center justify-between group/copy">
+                        <span>
+                          {apt.registration_number || apt.id?.slice(0, 8)}
+                        </span>
+                        <CopyButton
+                          value={apt.registration_number || apt.id}
+                          className="opacity-0 group-hover/copy:opacity-100 transition-opacity"
+                        />
+                      </div>
                     </TableCell>
                     <TableCell className="py-3.5 px-5">
                       <p className="text-sm font-medium text-slate-800">

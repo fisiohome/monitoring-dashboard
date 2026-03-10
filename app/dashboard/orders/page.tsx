@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useOrders } from "@/lib/hooks/use-orders";
 import { useFilterParams } from "@/lib/hooks/use-filter-params";
+import { CopyButton } from "@/components/ui/copy-button";
 import { OrderFilterBar } from "@/components/sections/orders/order-filter-bar";
 import { OrderStatusBadge } from "@/components/sections/orders/status-badge";
 import { ExportExcelButton } from "@/components/ui/ExportExcelButton";
@@ -108,9 +109,17 @@ function OrdersPageInner() {
                     className={`group border-b border-slate-50 hover:bg-violet-50/40 transition-colors ${i % 2 === 1 ? "bg-slate-50/30" : ""}`}
                   >
                     <TableCell className="py-3.5 px-5 font-mono text-xs font-semibold text-violet-700">
-                      <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-violet-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        {order.registration_number || order.id?.slice(0, 8)}
+                      <div className="flex items-center justify-between group/copy">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-violet-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <span>
+                            {order.registration_number || order.id?.slice(0, 8)}
+                          </span>
+                        </div>
+                        <CopyButton
+                          value={order.registration_number || order.id}
+                          className="opacity-0 group-hover/copy:opacity-100 transition-opacity"
+                        />
                       </div>
                     </TableCell>
                     <TableCell className="py-3.5 px-5">
