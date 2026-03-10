@@ -21,6 +21,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
     async function loadData() {
       try {
         const [summaryData, metricsData] = await Promise.all([
@@ -38,7 +40,15 @@ export default function DashboardPage() {
         setLoading(false);
       }
     }
+
     loadData();
+
+    // Auto-refresh every 1 minute (60000 ms)
+    intervalId = setInterval(() => {
+      loadData();
+    }, 60000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   if (loading) {
@@ -90,8 +100,12 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-muted-foreground bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-            Live updates: On
+          <span className="text-xs text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200 flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            Live updates: Every 1m
           </span>
         </div>
       </div>

@@ -1,7 +1,10 @@
 "use client";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Users, CalendarCheck } from "lucide-react";
+import { Users, CalendarCheck, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface DailyMetrics {
   total_users: number;
@@ -31,6 +34,7 @@ function MetricFunnel({
   baseTo,
   subFrom,
   subTo,
+  onClick,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -46,23 +50,35 @@ function MetricFunnel({
   baseTo: string;
   subFrom: string;
   subTo: string;
+  onClick?: () => void;
 }) {
   const subPct =
     baseValue > 0 ? Math.min((subValue / baseValue) * 100, 100) : 0;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div
+      className={cn(
+        "flex flex-col gap-4 p-4 -m-4 rounded-xl transition-colors",
+        onClick && "cursor-pointer hover:bg-slate-50/80 group",
+      )}
+      onClick={onClick}
+    >
       {/* Title */}
-      <div className="flex items-center gap-2">
-        <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center"
-          style={{ background: `${baseFrom}18` }}
-        >
-          <span style={{ color: baseFrom }}>{icon}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div
+            className="w-7 h-7 rounded-lg flex items-center justify-center"
+            style={{ background: `${baseFrom}18` }}
+          >
+            <span style={{ color: baseFrom }}>{icon}</span>
+          </div>
+          <span className="text-xs font-semibold uppercase tracking-widest text-slate-400 group-hover:text-slate-600 transition-colors">
+            {title}
+          </span>
         </div>
-        <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">
-          {title}
-        </span>
+        {onClick && (
+          <ArrowRight className="h-4 w-4 text-slate-300 opacity-0 group-hover:opacity-100 group-hover:text-slate-600 transition-all -translate-x-2 group-hover:translate-x-0" />
+        )}
       </div>
 
       {/* Base metric */}
@@ -79,7 +95,7 @@ function MetricFunnel({
           </div>
         </div>
         <span
-          className="text-xl font-bold shrink-0 tabular-nums"
+          className="text-xl font-bold shrink-0 tabular-nums w-16 text-right"
           style={{ color: baseFrom }}
         >
           {formatNumber(baseValue)}
@@ -106,7 +122,7 @@ function MetricFunnel({
           </div>
         </div>
         <span
-          className="text-xl font-bold shrink-0 tabular-nums"
+          className="text-xl font-bold shrink-0 tabular-nums w-16 text-right"
           style={{ color: subFrom }}
         >
           {formatNumber(subValue)}
@@ -117,6 +133,8 @@ function MetricFunnel({
 }
 
 export function FunnelChart({ data }: { data?: DailyMetrics }) {
+  const router = useRouter();
+
   if (!data) return null;
 
   const visitCompletionRate =
@@ -196,6 +214,10 @@ export function FunnelChart({ data }: { data?: DailyMetrics }) {
             baseTo="#38bdf8"
             subFrom="#0284c7"
             subTo="#0ea5e9"
+            onClick={() => {
+              const today = format(new Date(), "yyyy-MM-dd");
+              router.push(`/dashboard/appointments?date=${today}&page=1`);
+            }}
           />
         </div>
 
