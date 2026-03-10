@@ -3,6 +3,7 @@ import { Noto_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Suspense } from "react";
+import { FCMProvider } from "@/components/providers/fcm-provider";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -75,7 +76,7 @@ export default function RootLayout({
         className={`${notoSans.variable} font-sans antialiased bg-[#F3F6F8]`}
         suppressHydrationWarning
       >
-        {children}
+        <FCMProvider>{children}</FCMProvider>
         <Toaster position="top-right" richColors />
       </body>
     </html>
