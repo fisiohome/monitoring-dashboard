@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Appointment } from "@/lib/types/appointment";
+import { format } from "date-fns";
 
 function AppointmentsPageInner() {
   const {
@@ -25,6 +26,7 @@ function AppointmentsPageInner() {
     loading,
     page,
     totalPages,
+    totalItems,
     handleExportAll,
     hasActiveFilters,
     setFilters,
@@ -66,6 +68,7 @@ function AppointmentsPageInner() {
                 {[
                   "Registration No.",
                   "Visit",
+                  "Appointment Date",
                   "Patient",
                   "Therapist",
                   "Service",
@@ -127,6 +130,20 @@ function AppointmentsPageInner() {
                       <p className="text-xs text-slate-400">
                         of {apt.total_visits_in_booking}
                       </p>
+                    </TableCell>
+                    <TableCell className="py-3.5 px-5 font-mono text-xs font-semibold text-violet-700">
+                      {apt.appointment_date_time ? (
+                        <>
+                          <p>
+                            {format(new Date(apt.appointment_date_time), "PP")}
+                          </p>
+                          <p>
+                            {format(new Date(apt.appointment_date_time), "p")}
+                          </p>
+                        </>
+                      ) : (
+                        "-"
+                      )}
                     </TableCell>
                     <TableCell className="py-3.5 px-5">
                       <p className="text-sm font-medium text-slate-800 leading-tight">
@@ -194,7 +211,10 @@ function AppointmentsPageInner() {
         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100">
           <p className="text-xs text-slate-400">
             Page <span className="font-semibold text-slate-700">{page}</span> of{" "}
-            <span className="font-semibold text-slate-700">{totalPages}</span>
+            <span className="font-semibold text-slate-700">{totalPages}</span> •
+            Total{" "}
+            <span className="font-semibold text-slate-700">{totalItems}</span>{" "}
+            items
           </p>
           <div className="flex items-center gap-1.5">
             <button

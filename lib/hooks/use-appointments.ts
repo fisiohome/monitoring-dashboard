@@ -13,6 +13,7 @@ export function useAppointments() {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   const page = parseInt(get("page", "1")) || 1;
   const pageSize = 10;
@@ -56,6 +57,7 @@ export function useAppointments() {
         const response = await fetchAppointments(params);
         setAppointments(response.appointments ?? []);
         setTotalPages(response.meta?.total_pages ?? 1);
+        setTotalItems(response.meta?.total_items ?? 0);
       } catch (error: any) {
         console.error("Failed to load appointments", error);
         toast.error("Gagal memuat data appointments", {
@@ -113,6 +115,7 @@ export function useAppointments() {
     page,
     pageSize,
     totalPages,
+    totalItems,
     handleExportAll,
     hasActiveFilters,
     setFilters: set,

@@ -40,6 +40,19 @@ export function useAuth() {
       }
 
       if (data?.success) {
+        // Role validation
+        const roles = data.data.user?.roles || [];
+        const hasAccess = roles.some((role: string) =>
+          ["ADMIN", "STAFF"].includes(role.toUpperCase()),
+        );
+
+        if (!hasAccess) {
+          throw new ApiError(
+            "Anda tidak memiliki akses sebagai Admin/Staff",
+            403,
+          );
+        }
+
         Cookies.set("access_token", data.data.access_token, { expires: 1 });
         if (data.data.refresh_token) {
           Cookies.set("refresh_token", data.data.refresh_token, { expires: 7 }); // e.g. 7 days

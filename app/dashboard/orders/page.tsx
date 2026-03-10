@@ -63,16 +63,22 @@ function OrdersPageInner() {
           <Table>
             <TableHeader>
               <TableRow className="border-b border-slate-100 hover:bg-transparent">
-                {["Order ID", "Customer", "Service", "Date", "Status", ""].map(
-                  (h) => (
-                    <TableHead
-                      key={h}
-                      className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 py-3 px-5 bg-slate-50/70"
-                    >
-                      {h}
-                    </TableHead>
-                  ),
-                )}
+                {[
+                  "Order ID",
+                  "Customer",
+                  "Service",
+                  "Package",
+                  "Date",
+                  "Status",
+                  "",
+                ].map((h) => (
+                  <TableHead
+                    key={h}
+                    className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 py-3 px-5 bg-slate-50/70"
+                  >
+                    {h}
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -121,8 +127,13 @@ function OrdersPageInner() {
                         </span>
                       </div>
                     </TableCell>
+                    <TableCell className="py-3.5 px-5">
+                      <span className="inline-block px-2 py-0.5 rounded-md bg-violet-50 text-violet-700 text-xs font-medium">
+                        {order.service?.name?.replace(/_/g, " ") || "—"}
+                      </span>
+                    </TableCell>
                     <TableCell className="py-3.5 px-5 text-sm text-slate-600">
-                      {order.service?.name || order.package?.name || "—"}
+                      {order.package?.name || "—"}
                     </TableCell>
                     <TableCell className="py-3.5 px-5 text-sm text-slate-500">
                       {order.created_at
@@ -150,7 +161,10 @@ function OrdersPageInner() {
         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100">
           <p className="text-xs text-slate-400">
             Page <span className="font-semibold text-slate-700">{page}</span> of{" "}
-            <span className="font-semibold text-slate-700">{totalPages}</span>
+            <span className="font-semibold text-slate-700">{totalPages}</span> •
+            Total{" "}
+            <span className="font-semibold text-slate-700">{totalItems}</span>{" "}
+            items
           </p>
           <div className="flex items-center gap-1.5">
             <button

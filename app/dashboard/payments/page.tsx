@@ -22,8 +22,15 @@ import {
 } from "@/components/ui/table";
 
 function PaymentsPageInner() {
-  const { payments, loading, page, pageSize, totalPages, handleExportAll } =
-    usePayments();
+  const {
+    payments,
+    loading,
+    page,
+    pageSize,
+    totalPages,
+    totalItems,
+    handleExportAll,
+  } = usePayments();
   const { set } = useFilterParams();
   const [viewMode, setViewMode] = useState<"LIST" | "REPORTS">("LIST");
 
@@ -186,7 +193,12 @@ function PaymentsPageInner() {
                 <span className="font-semibold text-slate-700">{page}</span> of{" "}
                 <span className="font-semibold text-slate-700">
                   {totalPages}
-                </span>
+                </span>{" "}
+                • Total{" "}
+                <span className="font-semibold text-slate-700">
+                  {totalItems}
+                </span>{" "}
+                items
               </p>
               <div className="flex items-center gap-1.5">
                 <button
