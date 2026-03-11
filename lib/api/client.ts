@@ -30,10 +30,26 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue = [];
 };
 
-function handleLogout() {
+export async function handleLogout() {
+  const fcmToken = Cookies.get("fcm_token");
+  const accessToken = Cookies.get("access_token");
+
+  if (fcmToken && accessToken) {
+    // Fire and forget, don't await to avoid obstructing the logout flow
+    fetch(`${API_BASE_URL}/api/v1/notifications/fcm/unregister`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ token: fcmToken }),
+    }).catch((e) => console.error("Failed to unregister FCM token:", e));
+  }
+
   Cookies.remove("access_token");
   Cookies.remove("refresh_token");
   Cookies.remove("user_email");
+  Cookies.remove("fcm_token");
   if (typeof window !== "undefined") {
     window.location.href = "/login";
   }

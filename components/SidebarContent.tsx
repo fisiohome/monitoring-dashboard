@@ -13,15 +13,13 @@ interface SidebarContentProps {
   onNavClick?: () => void;
 }
 
+import { handleLogout as performLogout } from "@/lib/api/client";
+
 export function SidebarContent({ className, onNavClick }: SidebarContentProps) {
   const pathname = usePathname();
 
-  const handleLogout = () => {
-    document.cookie =
-      "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie =
-      "user_email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.href = "/login";
+  const handleLogout = async () => {
+    await performLogout();
   };
 
   return (
