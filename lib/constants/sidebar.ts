@@ -4,6 +4,7 @@ import {
   Calendar,
   BarChart2,
   Users,
+  MessageSquare,
   LogOut,
 } from "lucide-react";
 
@@ -33,6 +34,7 @@ const menuItems: MenuGroup[] = [
       { icon: CheckSquare, label: "Orders", href: "/dashboard/orders" },
       { icon: Users, label: "Appointments", href: "/dashboard/appointments" },
       { icon: Calendar, label: "Reschedule", href: "/dashboard/reschedule" },
+      { icon: MessageSquare, label: "Feedback", href: "/dashboard/feedbacks" },
     ],
   },
   {
