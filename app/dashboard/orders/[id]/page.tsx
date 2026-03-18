@@ -37,6 +37,8 @@ import {
   Download,
   ZoomIn,
   Mail,
+  Star,
+  MessageSquare,
 } from "lucide-react";
 import { fetchOrderById } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -107,6 +109,22 @@ interface Visit {
   evidence?: Evidence;
 }
 
+interface Feedback {
+  id: string;
+  patient_name: string;
+  therapist_name: string;
+  communication_rating: number;
+  service_rating: number;
+  effectiveness_rating: number;
+  appearance_rating: number;
+  service_duration_sufficient: string;
+  suggestion: string | null;
+  criticism: string | null;
+  issue: string | null;
+  average_rating: number;
+  created_at: string;
+}
+
 interface Order {
   id: string;
   registration_number: string;
@@ -138,6 +156,7 @@ interface Order {
   visits: Visit[];
   payments: any[];
   has_feedback: boolean;
+  feedback?: Feedback | null;
   special_notes: string | null;
   created_at: string;
   updated_at: string;
@@ -489,6 +508,105 @@ export default function OrderDetailPage() {
               ))}
             </div>
           </SectionCard>
+
+          {/* Feedback */}
+          {order.has_feedback && order.feedback && (
+            <SectionCard
+              title="Feedback Pelanggan"
+              badge={
+                <div className="flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
+                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                  <span className="text-xs font-bold text-amber-700">
+                    {order.feedback.average_rating.toFixed(1)}
+                  </span>
+                </div>
+              }
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-1 divide-y divide-slate-50">
+                  <RatingItem
+                    label="Komunikasi"
+                    rating={order.feedback.communication_rating}
+                  />
+                  <RatingItem
+                    label="Pelayanan"
+                    rating={order.feedback.service_rating}
+                  />
+                  <RatingItem
+                    label="Efektivitas"
+                    rating={order.feedback.effectiveness_rating}
+                  />
+                  <RatingItem
+                    label="Penampilan"
+                    rating={order.feedback.appearance_rating}
+                  />
+                  <div className="flex items-center justify-between py-1.5 pt-2">
+                    <span className="text-sm text-slate-600">Durasi Layanan</span>
+                    <Badge
+                      variant="outline"
+                      className="bg-slate-50 text-slate-600 border-slate-200 text-[10px] uppercase font-bold tracking-wider"
+                    >
+                      {order.feedback.service_duration_sufficient}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {order.feedback.suggestion && (
+                    <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100/50">
+                      <div className="flex items-center gap-2 mb-2 text-blue-700">
+                        <MessageSquare className="h-4 w-4" />
+                        <span className="text-xs font-bold uppercase tracking-wider">
+                          Saran
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-700 italic leading-relaxed">
+                        "{order.feedback.suggestion}"
+                      </p>
+                    </div>
+                  )}
+                  {order.feedback.criticism && (
+                    <div className="bg-amber-50/50 rounded-2xl p-4 border border-amber-100/50">
+                      <div className="flex items-center gap-2 mb-2 text-amber-700">
+                        <AlertCircle className="h-4 w-4" />
+                        <span className="text-xs font-bold uppercase tracking-wider">
+                          Kritik
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-700 italic leading-relaxed">
+                        "{order.feedback.criticism}"
+                      </p>
+                    </div>
+                  )}
+                  {order.feedback.issue && (
+                    <div className="bg-red-50/50 rounded-2xl p-4 border border-red-100/50">
+                      <div className="flex items-center gap-2 mb-2 text-red-700">
+                        <AlertCircle className="h-4 w-4" />
+                        <span className="text-xs font-bold uppercase tracking-wider">
+                          Keluhan
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-700 italic leading-relaxed">
+                        "{order.feedback.issue}"
+                      </p>
+                    </div>
+                  )}
+                  {!order.feedback.suggestion &&
+                    !order.feedback.criticism &&
+                    !order.feedback.issue && (
+                      <div className="h-full flex flex-col items-center justify-center py-6 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+                        <p className="text-xs text-slate-400 italic">
+                          Tidak ada catatan tambahan.
+                        </p>
+                      </div>
+                    )}
+                </div>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-6 text-right">
+                Feedback diberikan pada {formatDate(order.feedback.created_at)}
+              </p>
+            </SectionCard>
+          )}
 
           {/* Special Notes */}
           {order.special_notes && (
@@ -1139,6 +1257,25 @@ function DetailPageSkeleton() {
           <Skeleton className="h-72 rounded-3xl" />
           <Skeleton className="h-44 rounded-2xl" />
         </div>
+      </div>
+    </div>
+  );
+}
+
+function RatingItem({ label, rating }: { label: string; rating: number }) {
+  return (
+    <div className="flex items-center justify-between py-1.5">
+      <span className="text-sm text-slate-600">{label}</span>
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((s) => (
+          <Star
+            key={s}
+            className={`h-3.5 w-3.5 ${
+              s <= rating ? "fill-amber-400 text-amber-400" : "text-slate-200"
+            }`}
+          />
+        ))}
+        <span className="text-xs font-bold text-slate-700 ml-1">{rating}</span>
       </div>
     </div>
   );
