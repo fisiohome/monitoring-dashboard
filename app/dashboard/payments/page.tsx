@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight, BarChart2, List } from "lucide-react";
+import { ChevronLeft, ChevronRight, BarChart2, List, Download } from "lucide-react";
 
 import { usePayments } from "@/lib/hooks/use-payments";
 import { useFilterParams } from "@/lib/hooks/use-filter-params";
@@ -11,6 +11,7 @@ import { CopyButton } from "@/components/ui/copy-button";
 import { PaymentFilterBar } from "@/components/sections/payments/payment-filter-bar";
 import { PaymentStatusBadge } from "@/components/sections/payments/status-badge";
 import { PaymentReports } from "@/components/dashboard/payments/PaymentReports";
+import { PaymentExport } from "@/components/dashboard/payments/PaymentExport";
 import { ExportExcelButton } from "@/components/ui/ExportExcelButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -33,7 +34,7 @@ function PaymentsPageInner() {
     handleExportAll,
   } = usePayments();
   const { set } = useFilterParams();
-  const [viewMode, setViewMode] = useState<"LIST" | "REPORTS">("LIST");
+  const [viewMode, setViewMode] = useState<"LIST" | "REPORTS" | "EXPORT">("LIST");
 
   return (
     <div className="space-y-5">
@@ -69,10 +70,22 @@ function PaymentsPageInner() {
           >
             <BarChart2 className="h-4 w-4" /> Reports
           </button>
+          <button
+            onClick={() => setViewMode("EXPORT")}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+              viewMode === "EXPORT"
+                ? "bg-white text-[#6200EE] shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            <Download className="h-4 w-4" /> Export
+          </button>
         </div>
       </div>
 
-      {viewMode === "REPORTS" ? (
+      {viewMode === "EXPORT" ? (
+        <PaymentExport />
+      ) : viewMode === "REPORTS" ? (
         <PaymentReports />
       ) : (
         <>

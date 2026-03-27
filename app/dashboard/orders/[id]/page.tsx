@@ -38,7 +38,7 @@ import {
   ZoomIn,
   Mail,
 } from "lucide-react";
-import { fetchOrderById } from "@/lib/api";
+import { fetchOrderById, sendFeedbackEmail } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -156,6 +156,26 @@ export default function OrderDetailPage() {
     photos: EvidencePhoto[];
     index: number;
   } | null>(null);
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
+
+  const handleSendFeedback = async () => {
+    if (!order) return;
+    try {
+      setIsSendingFeedback(true);
+      await sendFeedbackEmail({ registration_number: order.registration_number });
+      toast.success("Berhasil", {
+        description: "Email feedback telah terkirim.",
+      });
+      // Optimistic update so it disappears until the user refreshes
+      setOrder((prev) => (prev ? { ...prev, has_feedback: true } : prev));
+    } catch (error: any) {
+      toast.error("Gagal", {
+        description: error.message || "Gagal mengirim email feedback.",
+      });
+    } finally {
+      setIsSendingFeedback(false);
+    }
+  };
 
   useEffect(() => {
     async function loadDetail() {
@@ -228,8 +248,27 @@ export default function OrderDetailPage() {
           <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           Kembali ke Daftar Order
         </Button>
-        <div className="text-xs text-slate-400">
-          Last updated: {order.updated_at ? formatDate(order.updated_at) : "-"}
+        <div className="flex items-center gap-4">
+          {completedVisits > 0 &&
+            completedVisits === order.package.total_visits &&
+            !order.has_feedback && (
+              <Button
+                onClick={handleSendFeedback}
+                disabled={isSendingFeedback}
+                size="sm"
+                className="bg-[#6200EE] hover:bg-violet-700 text-white shadow-sm"
+              >
+                {isSendingFeedback ? (
+                  <div className="h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin mr-2" />
+                ) : (
+                  <Mail className="h-4 w-4 mr-2" />
+                )}
+                Kirim Feedback
+              </Button>
+            )}
+          <div className="text-xs text-slate-400">
+            Last updated: {order.updated_at ? formatDate(order.updated_at) : "-"}
+          </div>
         </div>
       </div>
 

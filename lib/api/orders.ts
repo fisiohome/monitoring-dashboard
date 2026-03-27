@@ -1,4 +1,6 @@
+import Cookies from "js-cookie";
 import { apiFetch } from "./client";
+import { API_BASE_URL } from "./config";
 import { SortOrder } from "./types";
 
 type OrdersFilter = {
@@ -56,4 +58,39 @@ export async function fetchOrders(params?: OrdersFilter) {
 
 export async function fetchOrderById(id: string) {
   return apiFetch<any>(`/api/v1/bookings/${id}`);
+}
+
+export async function exportOrdersReport(params?: {
+  creator_type?: "admin" | "customer" | "";
+  order_start_date?: string;
+  order_end_date?: string;
+}) {
+  const queryString = new URLSearchParams(
+    Object.entries(params ?? {})
+      .filter(([, v]) => v !== undefined && v !== null && v !== "")
+      .map(([k, v]) => [k, String(v)]),
+  ).toString();
+
+  const token = Cookies.get("access_token");
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const res = await fetch(
+    `${API_BASE_URL}/api/v1/bookings/report/export?${queryString}`,
+    {
+      method: "GET",
+      headers,
+    },
+  );
+
+  if (!res.ok) {
+    let errorMsg = "Failed to export report";
+    try {
+      const errData = await res.json();
+      if (errData.message) errorMsg = errData.message;
+    } catch (e) {}
+    throw new Error(errorMsg);
+  }
+
+  return res.blob();
 }
