@@ -46,9 +46,9 @@ export function usePayments() {
             registration_number: registrationNumberFilter,
           }),
           ...(orderStartDateFilter && {
-            order_start_date: orderStartDateFilter,
+            order_start_date: orderStartDateFilter.includes("T") ? orderStartDateFilter : `${orderStartDateFilter.split("T")[0]}T00:00:00Z`,
           }),
-          ...(orderEndDateFilter && { order_end_date: orderEndDateFilter }),
+          ...(orderEndDateFilter && { order_end_date: orderEndDateFilter.includes("T") ? orderEndDateFilter : `${orderEndDateFilter.split("T")[0]}T23:59:59Z` }),
         };
 
         const res = await fetchOrders(params);
@@ -98,8 +98,8 @@ export function usePayments() {
       ...(registrationNumberFilter && {
         registration_number: registrationNumberFilter,
       }),
-      ...(orderStartDateFilter && { order_start_date: orderStartDateFilter }),
-      ...(orderEndDateFilter && { order_end_date: orderEndDateFilter }),
+      ...(orderStartDateFilter && { order_start_date: orderStartDateFilter.includes("T") ? orderStartDateFilter : `${orderStartDateFilter.split("T")[0]}T00:00:00Z` }),
+      ...(orderEndDateFilter && { order_end_date: orderEndDateFilter.includes("T") ? orderEndDateFilter : `${orderEndDateFilter.split("T")[0]}T23:59:59Z` }),
     };
     return await fetchAllPages(fetchOrders, params, "bookings");
   };
