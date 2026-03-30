@@ -458,6 +458,48 @@ export default function AppointmentDetailPage() {
                     color="bg-slate-50 border-slate-200 text-slate-700"
                   />
                 )}
+                {soap.initial_physical_condition && (
+                  <SoapField
+                    label="Initial Physical Condition"
+                    value={soap.initial_physical_condition}
+                    color="bg-slate-50 border-slate-200 text-slate-700"
+                  />
+                )}
+                {soap.therapy_goal_evaluation && (
+                  <SoapField
+                    label="Therapy Goal Evaluation"
+                    value={soap.therapy_goal_evaluation}
+                    color="bg-slate-50 border-slate-200 text-slate-700"
+                  />
+                )}
+                {soap.follow_up_therapy_plan && (
+                  <SoapField
+                    label="Follow Up Therapy Plan"
+                    value={soap.follow_up_therapy_plan}
+                    color="bg-slate-50 border-slate-200 text-slate-700"
+                  />
+                )}
+                {soap.next_physiotherapy_goals && (
+                  <SoapField
+                    label="Next Physiotherapy Goals"
+                    value={soap.next_physiotherapy_goals}
+                    color="bg-slate-50 border-slate-200 text-slate-700"
+                  />
+                )}
+                {soap.therapy_outcome_summary && (
+                  <SoapField
+                    label="Therapy Outcome Summary"
+                    value={soap.therapy_outcome_summary}
+                    color="bg-slate-50 border-slate-200 text-slate-700"
+                  />
+                )}
+                {soap.notes && (
+                  <SoapField
+                    label="Notes"
+                    value={soap.notes}
+                    color="bg-slate-50 border-slate-200 text-slate-700"
+                  />
+                )}
                 <p className="text-xs text-slate-400">
                   Created {format(new Date(soap.created_at), "PPP p")}
                 </p>

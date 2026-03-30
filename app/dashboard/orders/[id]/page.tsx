@@ -75,6 +75,12 @@ interface Soap {
   assessment: string;
   planning: string;
   additional_notes: string;
+  initial_physical_condition?: string;
+  therapy_goal_evaluation?: string;
+  follow_up_therapy_plan?: string;
+  next_physiotherapy_goals?: string;
+  therapy_outcome_summary?: string;
+  notes?: string;
   is_complete: boolean;
   completion_percentage: number;
   created_at: string;
@@ -991,6 +997,48 @@ function VisitRow({
                     <SoapField
                       label="Catatan Tambahan"
                       value={visit.soap.additional_notes}
+                      color="bg-slate-50 border-slate-200 text-slate-700"
+                    />
+                  )}
+                  {visit.soap.initial_physical_condition && (
+                    <SoapField
+                      label="Kondisi Fisik Awal"
+                      value={visit.soap.initial_physical_condition}
+                      color="bg-slate-50 border-slate-200 text-slate-700"
+                    />
+                  )}
+                  {visit.soap.therapy_goal_evaluation && (
+                    <SoapField
+                      label="Evaluasi Tujuan Terapi"
+                      value={visit.soap.therapy_goal_evaluation}
+                      color="bg-slate-50 border-slate-200 text-slate-700"
+                    />
+                  )}
+                  {visit.soap.follow_up_therapy_plan && (
+                    <SoapField
+                      label="Rencana Terapi Lanjutan"
+                      value={visit.soap.follow_up_therapy_plan}
+                      color="bg-slate-50 border-slate-200 text-slate-700"
+                    />
+                  )}
+                  {visit.soap.next_physiotherapy_goals && (
+                    <SoapField
+                      label="Tujuan Fisioterapi Selanjutnya"
+                      value={visit.soap.next_physiotherapy_goals}
+                      color="bg-slate-50 border-slate-200 text-slate-700"
+                    />
+                  )}
+                  {visit.soap.therapy_outcome_summary && (
+                    <SoapField
+                      label="Ringkasan Hasil Terapi"
+                      value={visit.soap.therapy_outcome_summary}
+                      color="bg-slate-50 border-slate-200 text-slate-700"
+                    />
+                  )}
+                  {visit.soap.notes && (
+                    <SoapField
+                      label="Catatan"
+                      value={visit.soap.notes}
                       color="bg-slate-50 border-slate-200 text-slate-700"
                     />
                   )}
