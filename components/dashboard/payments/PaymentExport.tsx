@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { format, subMonths } from "date-fns";
 import { Download, FileSpreadsheet } from "lucide-react";
-import { exportOrdersReport } from "@/lib/api/orders";
+import { exportOrdersReport, exportContactsReport } from "@/lib/api/orders";
 
 export function PaymentExport() {
   const [loading, setLoading] = useState(false);
@@ -24,26 +24,43 @@ export function PaymentExport() {
       const startIso = startDate ? new Date(`${startDate}T00:00:00+07:00`).toISOString() : undefined;
       const endIso = endDate ? new Date(`${endDate}T23:59:59+07:00`).toISOString() : undefined;
 
-      const blob = await exportOrdersReport({
+      const params = {
         creator_type: creatorType,
         order_start_date: startIso,
         order_end_date: endIso,
-      });
+      };
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      
+      // Call both APIs in parallel
+      const [invoiceBlob, contactsBlob] = await Promise.all([
+        exportOrdersReport(params),
+        exportContactsReport(params)
+      ]);
+
       const datetime = format(new Date(), "yyyyMMdd-HHmmss");
-      a.download = `SalesInvoiceImportTemplate-${datetime}.xlsx`;
-      
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+
+      // Download Invoices
+      const urlInvoice = window.URL.createObjectURL(invoiceBlob);
+      const aInvoice = document.createElement("a");
+      aInvoice.href = urlInvoice;
+      aInvoice.download = `SalesInvoiceImportTemplate-${datetime}.xlsx`;
+      document.body.appendChild(aInvoice);
+      aInvoice.click();
+      document.body.removeChild(aInvoice);
+      window.URL.revokeObjectURL(urlInvoice);
+
+      // Download Contacts
+      const urlContacts = window.URL.createObjectURL(contactsBlob);
+      const aContacts = document.createElement("a");
+      aContacts.href = urlContacts;
+      aContacts.download = `NewContactsImportTemplate-${datetime}.xlsx`;
+      document.body.appendChild(aContacts);
+      aContacts.click();
+      document.body.removeChild(aContacts);
+      window.URL.revokeObjectURL(urlContacts);
+
     } catch (error: any) {
       console.error("Export failed:", error);
-      alert(`Failed to export report: ${error.message || "Please try again."}`);
+      alert(`Failed to export reports: ${error.message || "Please try again."}`);
     } finally {
       setLoading(false);
     }
