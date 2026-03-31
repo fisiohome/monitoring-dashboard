@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { fetchOrders } from "@/lib/api/orders";
 import { toast } from "sonner";
 import { fetchAllPages } from "@/lib/export-utils";
+import { formatDateFilter } from "@/lib/utils";
 
 export function usePayments() {
   const searchParams = useSearchParams();
@@ -46,9 +47,9 @@ export function usePayments() {
             registration_number: registrationNumberFilter,
           }),
           ...(orderStartDateFilter && {
-            order_start_date: orderStartDateFilter.includes("T") ? orderStartDateFilter : `${orderStartDateFilter.split("T")[0]}T00:00:00Z`,
+            order_start_date: formatDateFilter(orderStartDateFilter),
           }),
-          ...(orderEndDateFilter && { order_end_date: orderEndDateFilter.includes("T") ? orderEndDateFilter : `${orderEndDateFilter.split("T")[0]}T23:59:59Z` }),
+          ...(orderEndDateFilter && { order_end_date: formatDateFilter(orderEndDateFilter, true) }),
         };
 
         const res = await fetchOrders(params);
@@ -98,8 +99,8 @@ export function usePayments() {
       ...(registrationNumberFilter && {
         registration_number: registrationNumberFilter,
       }),
-      ...(orderStartDateFilter && { order_start_date: orderStartDateFilter.includes("T") ? orderStartDateFilter : `${orderStartDateFilter.split("T")[0]}T00:00:00Z` }),
-      ...(orderEndDateFilter && { order_end_date: orderEndDateFilter.includes("T") ? orderEndDateFilter : `${orderEndDateFilter.split("T")[0]}T23:59:59Z` }),
+      ...(orderStartDateFilter && { order_start_date: formatDateFilter(orderStartDateFilter) }),
+      ...(orderEndDateFilter && { order_end_date: formatDateFilter(orderEndDateFilter, true) }),
     };
     return await fetchAllPages(fetchOrders, params, "bookings");
   };

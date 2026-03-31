@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { fetchFeedbacks, FetchFeedbacksParams, Feedback } from "@/lib/api/feedbacks";
 import { useFilterParams } from "@/lib/hooks/use-filter-params";
+import { formatDateFilter } from "@/lib/utils";
 
 export function useFeedbacks() {
   const { get, getAll, set, clear, searchParams } = useFilterParams();
@@ -31,8 +32,8 @@ export function useFeedbacks() {
           ...(registrationNumber && { registration_number: registrationNumber }),
           ...(therapistName && { therapist_name: therapistName }),
           ...(patientName && { patient_name: patientName }),
-          ...(startDate && { start_date: startDate }),
-          ...(endDate && { end_date: endDate }),
+          ...(startDate && { start_date: formatDateFilter(startDate) }),
+          ...(endDate && { end_date: formatDateFilter(endDate, true) }),
         };
 
         const response = await fetchFeedbacks(params);

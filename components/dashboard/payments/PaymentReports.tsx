@@ -17,6 +17,7 @@ import {
   TrendingUp,
   ShoppingCart,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchPaymentReport } from "@/lib/api/dashboard";
 import type { PaymentReport } from "@/lib/api/types";
@@ -51,6 +52,7 @@ export function PaymentReports() {
         setData(res);
       } catch (e) {
         console.error("Failed to load payment report", e);
+        toast.error("Failed to load payment report. Please try again.");
       } finally {
         setLoading(false);
       }

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { fetchAllPages } from "@/lib/export-utils";
+import { formatDateFilter } from "@/lib/utils";
 import { fetchAppointments, FetchAppointmentsParams } from "@/lib/api";
 import { useFilterParams } from "@/lib/hooks/use-filter-params";
 
@@ -44,8 +45,8 @@ export function useAppointments() {
           ...(orderIdFilter && { order_id: orderIdFilter }),
           ...(search && { registration_number: search }),
           ...(dateFilter && { date: dateFilter }),
-          ...(startDateFilter && { start_date: startDateFilter.includes("T") ? startDateFilter : `${startDateFilter.split("T")[0]}T00:00:00Z` }),
-          ...(endDateFilter && { end_date: endDateFilter.includes("T") ? endDateFilter : `${endDateFilter.split("T")[0]}T23:59:59Z` }),
+          ...(startDateFilter && { start_date: formatDateFilter(startDateFilter) }),
+          ...(endDateFilter && { end_date: formatDateFilter(endDateFilter, true) }),
           ...(isSoapExists !== "all" && {
             is_soap_exists: isSoapExists === "true",
           }),

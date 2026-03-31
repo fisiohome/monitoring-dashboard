@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { format, subMonths } from "date-fns";
 import { Download, FileSpreadsheet } from "lucide-react";
+import { toast } from "sonner";
 import { exportOrdersReport, exportContactsReport } from "@/lib/api/orders";
 
 export function PaymentExport() {
@@ -58,9 +59,10 @@ export function PaymentExport() {
       document.body.removeChild(aContacts);
       window.URL.revokeObjectURL(urlContacts);
 
+      toast.success("Reports exported successfully");
     } catch (error: any) {
       console.error("Export failed:", error);
-      alert(`Failed to export reports: ${error.message || "Please try again."}`);
+      toast.error(`Failed to export reports: ${error.message || "Please try again."}`);
     } finally {
       setLoading(false);
     }
