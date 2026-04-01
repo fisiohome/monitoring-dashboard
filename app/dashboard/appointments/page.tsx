@@ -26,6 +26,7 @@ function AppointmentsPageInner() {
     appointments,
     loading,
     page,
+    limit,
     totalPages,
     totalItems,
     handleExportAll,
@@ -217,14 +218,35 @@ function AppointmentsPageInner() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100">
-          <p className="text-xs text-slate-400">
-            Page <span className="font-semibold text-slate-700">{page}</span> of{" "}
-            <span className="font-semibold text-slate-700">{totalPages}</span> •
-            Total{" "}
-            <span className="font-semibold text-slate-700">{totalItems}</span>{" "}
-            items
-          </p>
+        <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-slate-100 gap-4">
+          <div className="flex items-center gap-4">
+            <p className="text-xs text-slate-400">
+              Page <span className="font-semibold text-slate-700">{page}</span>{" "}
+              of{" "}
+              <span className="font-semibold text-slate-700">{totalPages}</span>{" "}
+              • Total{" "}
+              <span className="font-semibold text-slate-700">{totalItems}</span>{" "}
+              items
+            </p>
+            <div className="flex items-center gap-2 border-l border-slate-100 pl-4">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                Show
+              </span>
+              <select
+                value={limit}
+                onChange={(e) =>
+                  setFilters({ limit: e.target.value, page: "1" })
+                }
+                className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-400 transition text-slate-700 cursor-pointer"
+              >
+                {[10, 50, 100].map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setFilters({ page: String(page - 1) })}

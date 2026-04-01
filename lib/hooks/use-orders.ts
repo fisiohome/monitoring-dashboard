@@ -16,7 +16,7 @@ export function useOrders() {
   const [totalItems, setTotalItems] = useState(0);
 
   const page = parseInt(searchParams.get("page") ?? "1") || 1;
-  const pageSize = 10;
+  const limit = parseInt(searchParams.get("limit") ?? "10") || 10;
   const search = searchParams.get("search") ?? "";
   const statusFilters = searchParams.getAll("status");
   const creatorTypeFilter = searchParams.get("creator_type") ?? "";
@@ -32,7 +32,7 @@ export function useOrders() {
       try {
         const params: any = {
           page,
-          limit: pageSize,
+          limit,
           sort_by: "created_at",
           sort_order: "desc",
           ...(statusFilters.length === 1 && { status: statusFilters[0] }),
@@ -59,7 +59,7 @@ export function useOrders() {
         setOrders(bookings);
         setTotalItems(total);
         setTotalPages(
-          (res.meta?.total_pages ?? Math.ceil(total / pageSize)) || 1,
+          (res.meta?.total_pages ?? Math.ceil(total / limit)) || 1,
         );
       } catch (error: any) {
         console.error("Failed to fetch orders", error);
@@ -93,7 +93,7 @@ export function useOrders() {
     orders,
     loading,
     page,
-    pageSize,
+    limit,
     totalPages,
     totalItems,
     handleExportAll,

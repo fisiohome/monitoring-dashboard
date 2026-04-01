@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, ChevronDown } from "lucide-react";
+import { Download, ChevronDown, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 import {
@@ -18,7 +19,7 @@ interface ExportExcelButtonProps {
     className?: string;
     variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
     size?: "default" | "sm" | "lg" | "icon";
-    onFetchAll?: () => Promise<any[]>;
+    onFetchAll?: (onProgress?: (loaded: number, total: number) => void) => Promise<any[]>;
 }
 
 export function ExportExcelButton({
@@ -30,6 +31,7 @@ export function ExportExcelButton({
     onFetchAll
 }: ExportExcelButtonProps) {
     const [loading, setLoading] = useState(false);
+    const [progressState, setProgressState] = useState({ current: 0, total: 0 });
 
     const processData = (dataToExport: any[]) => {
         return dataToExport.map(item => {
@@ -87,13 +89,49 @@ export function ExportExcelButton({
     const handleExportAll = async () => {
         if (!onFetchAll) return;
         setLoading(true); // Manually set loading here since handleExport also toggles it but we want to show it while fetching
+        setProgressState({ current: 0, total: 0 });
         try {
-            const allData = await onFetchAll();
+            const allData = await onFetchAll((current, total) => {
+                setProgressState({ current, total });
+            });
             await handleExport(allData, `${fileName}_ALL`);
-        } catch (error) {
+            toast.success("Berhasil mengekspor semua data");
+        } catch (error: any) {
             console.error("Failed to fetch all data:", error);
+            toast.error("Gagal mengekspor data", {
+                description: error?.message || "Terjadi kesalahan saat mengunduh data."
+            });
+        } finally {
             setLoading(false);
+            setProgressState({ current: 0, total: 0 });
         }
+    };
+
+    const renderButtonContent = () => {
+        if (loading) {
+            if (progressState.total > 0) {
+                const percent = Math.round((progressState.current / progressState.total) * 100);
+                return (
+                    <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Exporting {percent}%
+                    </>
+                );
+            }
+            return (
+                <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Exporting...
+                </>
+            );
+        }
+        return (
+            <>
+                <Download className="mr-2 h-4 w-4" />
+                Export
+                <ChevronDown className="ml-2 h-4 w-4" />
+            </>
+        );
     };
 
     if (onFetchAll) {
@@ -106,9 +144,7 @@ export function ExportExcelButton({
                         className={className}
                         disabled={loading}
                     >
-                        <Download className="mr-2 h-4 w-4" />
-                        {loading ? "Exporting..." : "Export"}
-                        <ChevronDown className="ml-2 h-4 w-4" />
+                        {renderButtonContent()}
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-white border shadow-lg z-50">

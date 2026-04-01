@@ -18,6 +18,7 @@ export function AppointmentFilterBar() {
   const statusFilters = getAll("status");
   const patientNameFilter = get("patient_name");
   const therapistNameFilter = get("therapist_name");
+  const therapistTypeFilter = get("therapist_type");
   const patientNumberFilter = get("patient_number");
   const orderIdFilter = get("order_id");
   const dateFilter = get("date");
@@ -25,6 +26,8 @@ export function AppointmentFilterBar() {
   const endDateFilter = get("end_date");
   const isSoapExists = get("soap", "all");
   const isEvidenceExists = get("evidence", "all");
+  const sortBy = get("sort_by", "created_at");
+  const sortOrder = get("sort_order", "desc");
 
   const activeFilters: {
     label: string;
@@ -50,6 +53,14 @@ export function AppointmentFilterBar() {
             {
               label: `Therapist: ${therapistNameFilter}`,
               removeKey: "therapist_name",
+            },
+          ]
+        : []),
+      ...(therapistTypeFilter
+        ? [
+            {
+              label: `Type: ${therapistTypeFilter}`,
+              removeKey: "therapist_type",
             },
           ]
         : []),
@@ -94,6 +105,22 @@ export function AppointmentFilterBar() {
             },
           ]
         : []),
+      ...(sortBy !== "created_at"
+        ? [
+            {
+              label: `Sort: ${sortBy.replace(/_/g, " ")}`,
+              removeKey: "sort_by",
+            },
+          ]
+        : []),
+      ...(sortOrder !== "desc"
+        ? [
+            {
+              label: `Order: ${sortOrder === "asc" ? "Ascending" : "Descending"}`,
+              removeKey: "sort_order",
+            },
+          ]
+        : []),
     ],
     [
       statusFilters,
@@ -106,6 +133,8 @@ export function AppointmentFilterBar() {
       endDateFilter,
       isSoapExists,
       isEvidenceExists,
+      sortBy,
+      sortOrder,
     ],
   );
 
@@ -113,13 +142,16 @@ export function AppointmentFilterBar() {
     const hasAdvanced =
       patientNameFilter ||
       therapistNameFilter ||
+      therapistTypeFilter ||
       patientNumberFilter ||
       orderIdFilter ||
       dateFilter ||
       startDateFilter ||
       endDateFilter ||
       isSoapExists !== "all" ||
-      isEvidenceExists !== "all";
+      isEvidenceExists !== "all" ||
+      sortBy !== "created_at" ||
+      sortOrder !== "desc";
     if (hasAdvanced) setShowAdvanced(true);
   }, []);
 
@@ -210,6 +242,18 @@ export function AppointmentFilterBar() {
               defaultValue={therapistNameFilter}
               onCommit={(v) => set({ therapist_name: v })}
             />
+            <FieldSelect
+              label="Therapist Type"
+              value={therapistTypeFilter || "all"}
+              onChange={(v) =>
+                set({ therapist_type: v === "all" ? null : v })
+              }
+              options={[
+                { value: "all", label: "Any" },
+                { value: "internal", label: "Internal" },
+                { value: "external", label: "External" },
+              ]}
+            />
             <FieldInput
               label="Patient Number"
               placeholder="Search patient number..."
@@ -258,6 +302,29 @@ export function AppointmentFilterBar() {
                 { value: "all", label: "Any" },
                 { value: "true", label: "Yes" },
                 { value: "false", label: "No" },
+              ]}
+            />
+            <FieldSelect
+              label="Sort By"
+              value={sortBy}
+              onChange={(v) => set({ sort_by: v })}
+              options={[
+                { value: "created_at", label: "Created At" },
+                {
+                  value: "appointment_date_time",
+                  label: "Appointment Date",
+                },
+                { value: "registration_number", label: "Reg. Number" },
+                { value: "status", label: "Status" },
+              ]}
+            />
+            <FieldSelect
+              label="Sort Order"
+              value={sortOrder}
+              onChange={(v) => set({ sort_order: v })}
+              options={[
+                { value: "desc", label: "Descending" },
+                { value: "asc", label: "Ascending" },
               ]}
             />
           </div>

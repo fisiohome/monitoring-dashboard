@@ -26,8 +26,9 @@ export interface FetchAppointmentsParams {
   end_date?: string; // ISO date-time
   is_soap_exists?: boolean;
   is_evidence_exists?: boolean;
+  therapist_type?: "internal" | "external";
   page?: number; // default: 1
-  page_size?: number; // default: 20, max: 100
+  limit?: number; // default: 20, max: 100
   sort_by?: string; // default: "appointment_date_time"
   sort_order?: SortOrder; // default: "desc"
 }

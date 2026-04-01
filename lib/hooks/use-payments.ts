@@ -16,7 +16,7 @@ export function usePayments() {
   const [totalItems, setTotalItems] = useState(0);
 
   const page = parseInt(searchParams.get("page") ?? "1") || 1;
-  const pageSize = 10;
+  const limit = parseInt(searchParams.get("limit") ?? "10") || 10;
   const search = searchParams.get("search") ?? "";
   const paymentStatusFilters = searchParams.getAll("payment_status");
   const patientNameFilter = searchParams.get("patient_name") ?? "";
@@ -33,7 +33,7 @@ export function usePayments() {
       try {
         const params: any = {
           page,
-          limit: pageSize,
+          limit,
           sort_by: sortBy,
           sort_order: sortOrder,
           ...(paymentStatusFilters.length === 1 && {
@@ -74,7 +74,7 @@ export function usePayments() {
         setPayments(bookings);
         setTotalItems(total);
         setTotalPages(
-          (res.meta?.total_pages ?? Math.ceil(total / pageSize)) || 1,
+          (res.meta?.total_pages ?? Math.ceil(total / limit)) || 1,
         );
       } catch (error: any) {
         console.error("Failed to fetch payments", error);
@@ -109,7 +109,7 @@ export function usePayments() {
     payments,
     loading,
     page,
-    pageSize,
+    limit,
     totalPages,
     totalItems,
     handleExportAll,
