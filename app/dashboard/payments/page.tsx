@@ -3,7 +3,13 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight, BarChart2, List, Download } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  BarChart2,
+  List,
+  Download,
+} from "lucide-react";
 
 import { usePayments } from "@/lib/hooks/use-payments";
 import { useFilterParams } from "@/lib/hooks/use-filter-params";
@@ -34,7 +40,9 @@ function PaymentsPageInner() {
     handleExportAll,
   } = usePayments();
   const { set } = useFilterParams();
-  const [viewMode, setViewMode] = useState<"LIST" | "REPORTS" | "EXPORT">("LIST");
+  const [viewMode, setViewMode] = useState<"LIST" | "REPORTS" | "EXPORT">(
+    "LIST",
+  );
 
   return (
     <div className="space-y-5">
@@ -213,7 +221,8 @@ function PaymentsPageInner() {
               <div className="flex items-center gap-4">
                 <p className="text-xs text-slate-400">
                   Page{" "}
-                  <span className="font-semibold text-slate-700">{page}</span> of{" "}
+                  <span className="font-semibold text-slate-700">{page}</span>{" "}
+                  of{" "}
                   <span className="font-semibold text-slate-700">
                     {totalPages}
                   </span>{" "}
@@ -232,7 +241,7 @@ function PaymentsPageInner() {
                     onChange={(e) => set({ limit: e.target.value, page: "1" })}
                     className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-400 transition text-slate-700 cursor-pointer"
                   >
-                    {[10, 50, 100, 200, 500, 1000].map((v) => (
+                    {[10, 50, 100].map((v) => (
                       <option key={v} value={v}>
                         {v}
                       </option>

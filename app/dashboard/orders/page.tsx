@@ -186,7 +186,7 @@ function OrdersPageInner() {
                 onChange={(e) => set({ limit: e.target.value, page: "1" })}
                 className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-violet-500/30 focus:border-violet-400 transition text-slate-700 cursor-pointer"
               >
-                {[10, 50, 100, 200, 500, 1000].map((v) => (
+                {[10, 50, 100].map((v) => (
                   <option key={v} value={v}>
                     {v}
                   </option>
