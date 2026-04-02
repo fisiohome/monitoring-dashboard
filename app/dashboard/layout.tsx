@@ -1,4 +1,5 @@
-import { Sidebar } from "@/components/Sidebar";
+import { PersistentSidebarProvider } from "@/components/PersistentSidebarProvider";
+import { AppSidebar } from "@/components/AppSidebar";
 import { Header } from "@/components/Header";
 
 export default function DashboardLayout({
@@ -7,14 +8,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background flex font-sans">
-      <Sidebar />
-      <div className="flex-1 md:ml-64 flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden">
+    <PersistentSidebarProvider>
+      <AppSidebar />
+      <div className="flex flex-col flex-1 min-h-svh w-full overflow-x-hidden">
         <Header />
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto bg-[#F8FAFC]">
+        <main className="flex-1 p-4 md:p-8 bg-[#F8FAFC] overflow-y-auto">
           {children}
         </main>
       </div>
-    </div>
+    </PersistentSidebarProvider>
   );
 }

@@ -1,3 +1,6 @@
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 export function FieldInput({
   label,
   placeholder,
@@ -12,11 +15,9 @@ export function FieldInput({
   onCommit: (v: string) => void;
 }) {
   return (
-    <div className="space-y-1">
-      <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-        {label}
-      </label>
-      <input
+    <div className="space-y-2">
+      <Label className="text-xs text-slate-500 font-medium">{label}</Label>
+      <Input
         type={type}
         placeholder={placeholder}
         defaultValue={defaultValue}
@@ -24,7 +25,7 @@ export function FieldInput({
         onKeyDown={(e) => {
           if (e.key === "Enter") onCommit((e.target as HTMLInputElement).value);
         }}
-        className="w-full px-3 py-1.5 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 transition placeholder:text-slate-300"
+        className="w-full h-9 bg-white"
       />
     </div>
   );

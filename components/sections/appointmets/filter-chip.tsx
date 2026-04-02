@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export function FilterChip({
   label,
@@ -8,14 +9,14 @@ export function FilterChip({
   onRemove: () => void;
 }) {
   return (
-    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-violet-100 text-violet-800 text-xs font-medium">
+    <Badge variant="secondary" className="gap-1.5 px-3 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-medium border border-transparent pointer-events-auto">
       {label}
       <button
         onClick={onRemove}
-        className="ml-0.5 hover:text-violet-600 transition-colors"
+        className="text-slate-400 hover:text-slate-700 outline-none transition-colors"
       >
-        <X className="h-3 w-3" />
+        <X className="h-3.5 w-3.5" />
       </button>
-    </span>
+    </Badge>
   );
 }

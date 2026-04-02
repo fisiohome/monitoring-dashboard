@@ -24,8 +24,8 @@ export default function LoginPage() {
       {/* Left Column: Brand Info - Purple Background */}
       <div className="hidden lg:flex w-[60%] flex-col justify-center bg-[#6200EE] p-16 text-white relative overflow-hidden">
         {/* Logo Top Left */}
-        <div className="absolute top-10 left-10">
-          <div className="relative w-40 h-12">
+        <div className="absolute top-8 left-8">
+          <div className="relative w-32 h-10">
             <Image
               src="/logo.png"
               alt="Fisiohome"
@@ -35,9 +35,9 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="max-w-xl z-10 mt-10">
-          <h1 className="text-4xl font-bold mb-6">Tentang Fisiohome</h1>
-          <p className="text-lg leading-relaxed opacity-90 mb-8">
+        <div className="max-w-md z-10 mt-6">
+          <h1 className="text-3xl font-bold mb-4">Tentang Fisiohome</h1>
+          <p className="text-base leading-relaxed opacity-90 mb-6">
             Fisiohome adalah layanan home visit fisioterapi yang membawa
             perawatan fisioterapi berkualitas langsung ke pintu rumah Anda.
             Dengan Fisiohome, Anda dapat menikmati perawatan fisioterapi yang
@@ -55,7 +55,7 @@ export default function LoginPage() {
       {/* Right Column: Login Form - White Background */}
       <div className="flex flex-1 flex-col justify-center items-center bg-white p-8">
         {/* Mobile Logo */}
-        <div className="lg:hidden mb-8 w-40 h-12 relative">
+        <div className="lg:hidden mb-6 w-32 h-10 relative">
           <Image
             src="/logo.png"
             alt="Fisiohome"
@@ -64,15 +64,15 @@ export default function LoginPage() {
           />
         </div>
 
-        <div className="w-full max-w-md space-y-8 bg-white p-8 border border-slate-100 rounded-3xl shadow-xl shadow-slate-200/50">
+        <div className="w-full max-w-100 space-y-6 bg-white p-8 border border-slate-100 rounded-3xl shadow-xl shadow-slate-200/50">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1.5">
               Log In
             </h2>
-            <p className="text-slate-500 hidden">Please enter your details</p>
+            <p className="text-sm text-slate-500">Silakan masukkan detail Anda</p>
           </div>
-
-          <form onSubmit={handleLogin} className="space-y-5">
+          
+          <form onSubmit={handleLogin} className="space-y-4">
             {error && (
               <Alert
                 variant="destructive"
@@ -84,7 +84,7 @@ export default function LoginPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-600 font-medium">
+              <Label htmlFor="email" className="text-slate-600 text-sm font-medium">
                 Email
               </Label>
               <Input
@@ -92,7 +92,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="name@example.com"
                 required
-                className="h-12 rounded-xl bg-slate-50 border-slate-200 focus:ring-2 focus:ring-[#6200EE] focus:border-[#6200EE] transition-all"
+                className="h-10 text-sm rounded-xl bg-slate-50 border-slate-200 focus:ring-2 focus:ring-[#6200EE] focus:border-[#6200EE] transition-all"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -101,7 +101,7 @@ export default function LoginPage() {
               <div className="flex justify-between items-center">
                 <Label
                   htmlFor="password"
-                  className="text-slate-600 font-medium"
+                  className="text-slate-600 text-sm font-medium"
                 >
                   Kata sandi
                 </Label>
@@ -110,7 +110,7 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 required
-                className="h-12 rounded-xl bg-slate-50 border-slate-200 focus:ring-2 focus:ring-[#6200EE] focus:border-[#6200EE] transition-all"
+                className="h-10 text-sm rounded-xl bg-slate-50 border-slate-200 focus:ring-2 focus:ring-[#6200EE] focus:border-[#6200EE] transition-all"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -131,7 +131,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full bg-[#6200EE] hover:bg-[#5000CC] text-white rounded-xl h-12 text-base font-semibold shadow-lg shadow-purple-200 transition-all mt-4"
+              className="w-full bg-[#6200EE] hover:bg-[#5000CC] text-white rounded-xl h-10 text-sm font-semibold shadow-lg shadow-purple-200 transition-all mt-4"
               disabled={loading}
             >
               {loading ? (

@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { useFilterParams } from "@/lib/hooks/use-filter-params";
 import { FilterChip } from "@/components/sections/appointmets/filter-chip";
 import { FieldInput } from "@/components/sections/appointmets/field-input";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function FeedbackFilterBar() {
   const { get, set, clear } = useFilterParams();
@@ -64,9 +66,9 @@ export function FeedbackFilterBar() {
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100">
-        <div className="relative flex-1 min-w-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
+        <div className="relative flex-1 min-w-0 w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
+          <Input
             type="text"
             placeholder="Search by registration number..."
             defaultValue={search}
@@ -77,42 +79,39 @@ export function FeedbackFilterBar() {
                 });
             }}
             onBlur={(e) => set({ registration_number: e.target.value })}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 transition placeholder:text-slate-400"
+            className="pl-9 h-9 bg-slate-50/50 w-full"
           />
         </div>
 
-        <button
+        <Button
+          variant={showAdvanced ? "secondary" : "outline"}
           onClick={() => setShowAdvanced((v) => !v)}
-          className={cn(
-            "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium border transition shrink-0",
-            showAdvanced
-              ? "bg-violet-50 border-violet-200 text-violet-700"
-              : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300",
-          )}
+          className="h-9 gap-2 shrink-0 px-3"
         >
-          <SlidersHorizontal className="h-3.5 w-3.5" />
-          More filters
+          <SlidersHorizontal className="h-4 w-4" />
+          <span className="hidden sm:inline">More filters</span>
           {advancedFilterCount > 0 && (
-            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-violet-600 text-white text-[10px] font-bold">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-primary text-primary-foreground text-[10px] font-bold">
               {advancedFilterCount}
             </span>
           )}
           <ChevronDown
             className={cn(
-              "h-3.5 w-3.5 transition-transform",
+              "h-4 w-4 transition-transform",
               showAdvanced && "rotate-180",
             )}
           />
-        </button>
+        </Button>
 
         {(activeFilters.length > 0 || search) && (
-          <button
+          <Button
+            variant="ghost"
             onClick={clear}
-            className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 border border-transparent hover:border-red-100 transition shrink-0"
+            className="h-9 px-3 text-red-500 hover:text-red-600 hover:bg-red-50 shrink-0 gap-1.5"
           >
-            <X className="h-3.5 w-3.5" />
-            Clear
-          </button>
+            <X className="h-4 w-4" />
+            <span className="hidden sm:inline">Clear</span>
+          </Button>
         )}
       </div>
 

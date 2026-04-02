@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/command";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { STATUS_OPTIONS, STATUS_STYLES } from "./constants";
 
 export function StatusMultiSelect({
@@ -38,25 +39,21 @@ export function StatusMultiSelect({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button
-          className={cn(
-            "inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm border transition min-w-35 justify-between",
-            selected.length > 0
-              ? "bg-violet-50 border-violet-200 text-violet-800"
-              : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300",
-          )}
+        <Button
+          variant={selected.length > 0 ? "secondary" : "outline"}
+          className="h-9 min-w-35 justify-between font-normal px-3"
         >
           <span className="flex items-center gap-1.5 truncate">
             {selected.length === 0 ? (
-              <span className="text-slate-400">All statuses</span>
+              <span className="text-slate-500">All statuses</span>
             ) : selected.length === 1 ? (
               <span className="truncate">{selected[0].replace(/_/g, " ")}</span>
             ) : (
               <span>{selected.length} statuses</span>
             )}
           </span>
-          <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-50" />
-        </button>
+          <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-0 bg-white" align="start">
         <Command>

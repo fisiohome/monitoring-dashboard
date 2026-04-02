@@ -13,6 +13,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -42,13 +44,9 @@ function PaymentStatusMultiSelect({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button
-          className={cn(
-            "inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm border transition min-w-40 justify-between shrink-0",
-            selected.length > 0
-              ? "bg-violet-50 border-violet-200 text-violet-800"
-              : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300",
-          )}
+        <Button
+          variant={selected.length > 0 ? "secondary" : "outline"}
+          className="h-9 min-w-40 justify-between shrink-0 font-normal px-3"
         >
           <span className="flex items-center gap-1.5 truncate">
             {selected.length === 0 ? (
@@ -64,11 +62,11 @@ function PaymentStatusMultiSelect({
           </span>
           <ChevronDown
             className={cn(
-              "h-3.5 w-3.5 shrink-0 transition-transform opacity-50",
+              "h-4 w-4 shrink-0 transition-transform opacity-50",
               open && "rotate-180",
             )}
           />
-        </button>
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64 p-0 bg-white" align="start">
         <Command>
@@ -186,9 +184,9 @@ export function PaymentFilterBar() {
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
       {/* Primary row */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100">
-        <div className="relative flex-1 min-w-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
+        <div className="relative flex-1 min-w-0 w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
+          <Input
             type="text"
             placeholder="Search by Order ID or Customer…"
             defaultValue={search}
@@ -197,7 +195,7 @@ export function PaymentFilterBar() {
                 set({ search: (e.target as HTMLInputElement).value });
             }}
             onBlur={(e) => set({ search: e.target.value })}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 transition placeholder:text-slate-400"
+            className="pl-9 h-9 bg-slate-50/50 w-full"
           />
         </div>
 
@@ -206,20 +204,16 @@ export function PaymentFilterBar() {
           onChange={(values) => set({ payment_status: values })}
         />
 
-        <button
+        <Button
+          variant={showAdvanced ? "secondary" : "outline"}
           onClick={() => setShowAdvanced((v) => !v)}
-          className={cn(
-            "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium border transition shrink-0",
-            showAdvanced
-              ? "bg-violet-50 border-violet-200 text-violet-700"
-              : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300",
-          )}
+          className="h-9 gap-2 shrink-0 px-3"
         >
-          <SlidersHorizontal className="h-3.5 w-3.5" />
-          More filters
+          <SlidersHorizontal className="h-4 w-4" />
+          <span className="hidden sm:inline">More filters</span>
           {activeFilters.filter((f) => f.removeKey !== "payment_status")
             .length > 0 && (
-            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-violet-600 text-white text-[10px] font-bold">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-primary text-primary-foreground text-[10px] font-bold">
               {
                 activeFilters.filter((f) => f.removeKey !== "payment_status")
                   .length
@@ -228,20 +222,21 @@ export function PaymentFilterBar() {
           )}
           <ChevronDown
             className={cn(
-              "h-3.5 w-3.5 transition-transform",
+              "h-4 w-4 transition-transform",
               showAdvanced && "rotate-180",
             )}
           />
-        </button>
+        </Button>
 
         {activeFilters.length > 0 && (
-          <button
+          <Button
+            variant="ghost"
             onClick={clear}
-            className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 border border-transparent hover:border-red-100 transition shrink-0"
+            className="h-9 px-3 text-red-500 hover:text-red-600 hover:bg-red-50 shrink-0 gap-1.5"
           >
-            <X className="h-3.5 w-3.5" />
-            Clear
-          </button>
+            <X className="h-4 w-4" />
+            <span className="hidden sm:inline">Clear</span>
+          </Button>
         )}
       </div>
 

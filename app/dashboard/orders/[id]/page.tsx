@@ -7,6 +7,8 @@ import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SlaBadge } from "@/components/shared/sla-badge";
+import { CopySoapLink } from "@/components/shared/copy-soap-link";
 import { Separator } from "@/components/ui/separator";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Progress } from "@/components/ui/progress";
@@ -42,131 +44,16 @@ import {
 } from "lucide-react";
 import { fetchOrderById, sendFeedbackEmail } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface Therapist {
-  id: string;
-  full_name: string;
-  phone_number: string;
-  email: string;
-  registration_number: string;
-  gender: string;
-  batch: number;
-  specializations: string[];
-  modalities: string[];
-  employment_type: string;
-  employment_status: string;
-  therapist_type: string;
-}
-
-interface Address {
-  address_line: string;
-  postal_code: string | null;
-  latitude: number;
-  longitude: number;
-  notes: string | null;
-}
-
-interface Soap {
-  id: number;
-  subject: string;
-  objective: string;
-  assessment: string;
-  planning: string;
-  additional_notes: string;
-  initial_physical_condition?: string;
-  therapy_goal_evaluation?: string;
-  follow_up_therapy_plan?: string;
-  next_physiotherapy_goals?: string;
-  therapy_outcome_summary?: string;
-  notes?: string;
-  is_complete: boolean;
-  completion_percentage: number;
-  created_at: string;
-  updated_at: string;
-}
-
-interface EvidencePhoto {
-  id: number;
-  photo_type: string;
-  photo_url: string;
-  created_at: string;
-}
-
-interface Evidence {
-  id: number;
-  latitude: number;
-  longitude: number;
-  photos: EvidencePhoto[];
-  created_at: string;
-}
-
-interface Visit {
-  id: string;
-  visit_number: number;
-  status: string;
-  appointment_date_time: string;
-  therapist: Therapist;
-  address: Address;
-  is_soap_exists: boolean;
-  soap?: Soap;
-  is_evidence_exists: boolean;
-  evidence?: Evidence;
-}
-
-interface Feedback {
-  id: string;
-  patient_name: string;
-  therapist_name: string;
-  communication_rating: number;
-  service_rating: number;
-  effectiveness_rating: number;
-  appearance_rating: number;
-  service_duration_sufficient: string;
-  suggestion: string | null;
-  criticism: string | null;
-  issue: string | null;
-  average_rating: number;
-  created_at: string;
-}
-
-interface Order {
-  id: string;
-  registration_number: string;
-  status: string;
-  payment_status: string;
-  package_base_price: number;
-  subtotal: number;
-  discount_type: string;
-  discount_value: number;
-  discount_amount: number;
-  voucher_code: string | null;
-  tax_percentage: number;
-  tax_amount: number;
-  total_amount: number;
-  paid_amount: number;
-  remaining_amount: number;
-  invoice_number: string | null;
-  invoice_url: string | null;
-  invoice_due_date: string | null;
-  user: { id: string; email: string; phone: string | null; is_admin: boolean };
-  patient: { id: string; name: string; date_of_birth: string; gender: string };
-  package: {
-    id: number;
-    name: string;
-    total_visits: number;
-    price_per_visit: number;
-  };
-  service: { id: number; name: string };
-  visits: Visit[];
-  payments: any[];
-  has_feedback: boolean;
-  feedback?: Feedback | null;
-  special_notes: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import {
+  Therapist,
+  Address,
+  Soap,
+  EvidencePhoto,
+  Evidence,
+  Visit,
+  Feedback,
+  Order,
+} from "@/lib/types/order";
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
@@ -187,7 +74,9 @@ export default function OrderDetailPage() {
     if (!order) return;
     try {
       setIsSendingFeedback(true);
-      await sendFeedbackEmail({ registration_number: order.registration_number });
+      await sendFeedbackEmail({
+        registration_number: order.registration_number,
+      });
       toast.success("Berhasil", {
         description: "Email feedback telah terkirim.",
       });
@@ -268,7 +157,13 @@ export default function OrderDetailPage() {
         <Button
           variant="ghost"
           className="pl-0 hover:bg-transparent hover:text-[#6200EE] group text-slate-600"
-          onClick={() => router.back()}
+          onClick={() => {
+            if (window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/dashboard/orders");
+            }
+          }}
         >
           <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           Kembali ke Daftar Order
@@ -292,7 +187,8 @@ export default function OrderDetailPage() {
               </Button>
             )}
           <div className="text-xs text-slate-400">
-            Last updated: {order.updated_at ? formatDate(order.updated_at) : "-"}
+            Last updated:{" "}
+            {order.updated_at ? formatDate(order.updated_at) : "-"}
           </div>
         </div>
       </div>
@@ -586,7 +482,9 @@ export default function OrderDetailPage() {
                     rating={order.feedback.appearance_rating}
                   />
                   <div className="flex items-center justify-between py-1.5 pt-2">
-                    <span className="text-sm text-slate-600">Durasi Layanan</span>
+                    <span className="text-sm text-slate-600">
+                      Durasi Layanan
+                    </span>
                     <Badge
                       variant="outline"
                       className="bg-slate-50 text-slate-600 border-slate-200 text-[10px] uppercase font-bold tracking-wider"
@@ -895,6 +793,15 @@ function VisitRow({
 
       {isExpanded && (
         <div className="border-t border-slate-100 p-4 space-y-4">
+          <div className="flex items-center justify-between bg-indigo-50/50 border border-indigo-100/50 rounded-xl p-3">
+            <span className="text-xs font-semibold text-indigo-700 uppercase tracking-wider">
+              Form Pengisian SOAP
+            </span>
+            <CopySoapLink
+              appointmentId={visit.id}
+              className="bg-white border-indigo-200 hover:bg-indigo-50 text-indigo-700"
+            />
+          </div>
           {/* Therapist */}
           <div>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
@@ -948,14 +855,23 @@ function VisitRow({
           </div>
 
           {/* SOAP */}
-          {visit.is_soap_exists && visit.soap && (
+          {visit.is_soap_exists && visit.soap ? (
             <>
               <Separator />
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                    Catatan SOAP
-                  </p>
+                  <div className="flex items-center">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Catatan SOAP
+                    </p>
+                    {visit.soap_sla_minutes !== undefined &&
+                      visit.soap_sla_minutes !== null && (
+                        <SlaBadge
+                          minutes={visit.soap_sla_minutes}
+                          label="SOAP"
+                        />
+                      )}
+                  </div>
                   {visit.soap.is_complete ? (
                     <Badge
                       variant="outline"
@@ -1048,16 +964,39 @@ function VisitRow({
                 </p>
               </div>
             </>
-          )}
-
-          {/* Evidence */}
-          {visit.is_evidence_exists && visit.evidence && (
+          ) : (
             <>
               <Separator />
               <div>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-                  Bukti Kunjungan
+                  Catatan SOAP
                 </p>
+                <div className="flex flex-col items-center justify-center py-6 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                  <FileText className="h-8 w-8 text-slate-300 mb-3" />
+                  <p className="text-sm font-semibold text-slate-600">Belum Ada Catatan SOAP</p>
+                  <p className="text-xs text-slate-500 mt-1 max-w-[250px]">Terapis belum mengisi catatan SOAP untuk kunjungan ini.</p>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Evidence */}
+          {visit.is_evidence_exists && visit.evidence ? (
+            <>
+              <Separator />
+              <div>
+                <div className="flex items-center mb-3">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Bukti Kunjungan
+                  </p>
+                  {visit.evidence_sla_minutes !== undefined &&
+                    visit.evidence_sla_minutes !== null && (
+                      <SlaBadge
+                        minutes={visit.evidence_sla_minutes}
+                        label="Evidence"
+                      />
+                    )}
+                </div>
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   {visit.evidence.photos.map((photo, idx) => (
                     <button
@@ -1087,6 +1026,20 @@ function VisitRow({
                   <MapPin className="h-3 w-3" />
                   {visit.evidence.latitude.toFixed(6)},{" "}
                   {visit.evidence.longitude.toFixed(6)}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Separator />
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+                  Bukti Kunjungan
+                </p>
+                <div className="flex flex-col items-center justify-center py-6 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                  <Camera className="h-8 w-8 text-slate-300 mb-3" />
+                  <p className="text-sm font-semibold text-slate-600">Belum Ada Bukti Kehadiran</p>
+                  <p className="text-xs text-slate-500 mt-1 max-w-[250px]">Terapis belum mengunggah foto bukti kehadiran.</p>
                 </div>
               </div>
             </>

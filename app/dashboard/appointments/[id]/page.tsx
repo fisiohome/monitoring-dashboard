@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SlaBadge } from "@/components/shared/sla-badge";
+import { CopySoapLink } from "@/components/shared/copy-soap-link";
 import { CopyButton } from "@/components/ui/copy-button";
 import {
   ArrowLeft,
@@ -95,6 +97,8 @@ export default function AppointmentDetailPage() {
     evidence,
     is_soap_exists,
     is_evidence_exists,
+    soap_sla_minutes,
+    evidence_sla_minutes,
     is_final_visit,
     preferred_therapist_gender,
     fisiohome_partner_booking,
@@ -122,14 +126,23 @@ export default function AppointmentDetailPage() {
         <Button
           variant="ghost"
           className="pl-0 hover:bg-transparent hover:text-[#6200EE] group text-slate-600"
-          onClick={() => router.back()}
+          onClick={() => {
+            if (window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/dashboard/appointments");
+            }
+          }}
         >
           <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           Back to Appointments
         </Button>
-        <div className="text-xs text-slate-400">
-          Last updated:{" "}
-          {updated_at ? format(new Date(updated_at), "PPP p") : "-"}
+        <div className="flex items-center gap-4">
+          <CopySoapLink appointmentId={id} className="text-[#6200EE] border-[#6200EE]/30 bg-purple-50/50 hover:bg-purple-100/50" />
+          <div className="text-xs text-slate-400">
+            Last updated:{" "}
+            {updated_at ? format(new Date(updated_at), "PPP p") : "-"}
+          </div>
         </div>
       </div>
 
@@ -407,11 +420,19 @@ export default function AppointmentDetailPage() {
           </SectionCard>
 
           {/* SOAP Notes */}
-          {is_soap_exists && soap && (
+          {is_soap_exists && soap ? (
             <SectionCard
               icon={<FileText className="h-5 w-5" />}
               iconBg="bg-indigo-100 text-indigo-600"
-              title="SOAP Notes"
+              title={
+                <div className="flex items-center gap-2">
+                  <span>SOAP Notes</span>
+                  {soap_sla_minutes !== undefined &&
+                    soap_sla_minutes !== null && (
+                      <SlaBadge minutes={soap_sla_minutes} label="SOAP" />
+                    )}
+                </div>
+              }
               badge={
                 soap.is_complete ? (
                   <Badge
@@ -505,14 +526,37 @@ export default function AppointmentDetailPage() {
                 </p>
               </div>
             </SectionCard>
+          ) : (
+            <SectionCard
+              icon={<FileText className="h-5 w-5" />}
+              iconBg="bg-slate-100 text-slate-400"
+              title="SOAP Notes"
+            >
+              <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                <FileText className="h-8 w-8 text-slate-300 mb-3" />
+                <p className="text-sm font-semibold text-slate-600">Belum Ada Catatan SOAP</p>
+                <p className="text-xs text-slate-500 mt-1 max-w-[250px]">Terapis belum mengisi catatan SOAP untuk janji temu ini.</p>
+              </div>
+            </SectionCard>
           )}
 
           {/* Evidence */}
-          {is_evidence_exists && evidence && (
+          {is_evidence_exists && evidence ? (
             <SectionCard
               icon={<Camera className="h-5 w-5" />}
               iconBg="bg-pink-100 text-pink-600"
-              title="Attendance Evidence"
+              title={
+                <div className="flex items-center gap-2">
+                  <span>Attendance Evidence</span>
+                  {evidence_sla_minutes !== undefined &&
+                    evidence_sla_minutes !== null && (
+                      <SlaBadge
+                        minutes={evidence_sla_minutes}
+                        label="Evidence"
+                      />
+                    )}
+                </div>
+              }
             >
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
                 {evidence.photos?.map((photo: any, idx: number) => (
@@ -554,6 +598,18 @@ export default function AppointmentDetailPage() {
                 <span className="text-xs text-slate-400">
                   Submitted {format(new Date(evidence.created_at), "PPP p")}
                 </span>
+              </div>
+            </SectionCard>
+          ) : (
+            <SectionCard
+              icon={<Camera className="h-5 w-5" />}
+              iconBg="bg-slate-100 text-slate-400"
+              title="Attendance Evidence"
+            >
+              <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                <Camera className="h-8 w-8 text-slate-300 mb-3" />
+                <p className="text-sm font-semibold text-slate-600">Belum Ada Bukti Kehadiran</p>
+                <p className="text-xs text-slate-500 mt-1 max-w-[250px]">Terapis belum mengunggah foto bukti kehadiran.</p>
               </div>
             </SectionCard>
           )}
@@ -870,7 +926,7 @@ function SectionCard({
 }: {
   icon: React.ReactNode;
   iconBg: string;
-  title: string;
+  title: React.ReactNode;
   badge?: React.ReactNode;
   children: React.ReactNode;
 }) {
@@ -1000,3 +1056,5 @@ function DetailPageSkeleton() {
     </div>
   );
 }
+
+

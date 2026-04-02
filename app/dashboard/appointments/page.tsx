@@ -57,9 +57,18 @@ function AppointmentsPageInner() {
             Appointments List
           </h2>
           <ExportExcelButton
-            data={appointments}
+            data={appointments.map((apt: any) => ({
+              ...apt,
+              "SOAP Link": `${process.env.NEXT_PUBLIC_SOAP_BASE_URL || "https://karpis.fisiohome.id"}/bookings/${apt.id}/soap`,
+            }))}
             fileName="Appointments"
-            onFetchAll={handleExportAll}
+            onFetchAll={async (onProgress) => {
+              const all = await handleExportAll(onProgress);
+              return all.map((apt: any) => ({
+                ...apt,
+                "SOAP Link": `${process.env.NEXT_PUBLIC_SOAP_BASE_URL || "https://karpis.fisiohome.id"}/bookings/${apt.id}/soap`,
+              }));
+            }}
           />
         </div>
 
