@@ -66,9 +66,8 @@ export function FeedbackDashboard() {
     const total = feedbacks.length;
     const sum = feedbacks.reduce((acc, f) => acc + (f.average_rating || 0), 0);
     const score5Count = feedbacks.filter((f) => Math.round(f.average_rating) === 5).length;
-    // Assuming comment existence is checked via cancellation_reason or special_notes, or a comment field.
-    // Given we don't have a specific `comment` field in the type, we check potential fields.
-    const commentCount = feedbacks.filter((f: any) => f.comment?.trim() || f.order?.special_notes?.trim()).length;
+    // Calculate comments based on text feedback fields
+    const commentCount = feedbacks.filter((f) => f.suggestion?.trim() || f.criticism?.trim() || f.issue?.trim()).length;
 
     return {
       total,

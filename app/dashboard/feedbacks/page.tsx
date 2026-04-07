@@ -62,7 +62,7 @@ function FeedbacksPageInner() {
         "Effectiveness": fb.effectiveness_rating,
         "Appearance": fb.appearance_rating,
         "Average Score": fb.average_rating,
-        "Comment": (fb as any).comment || fb.order?.special_notes || "",
+        "Comment": [fb.suggestion, fb.criticism, fb.issue].filter(Boolean).join(" | ") || "-",
         "Duration": fb.service_duration_sufficient,
       }));
       const ws = xlsx.utils.json_to_sheet(data);
@@ -276,8 +276,8 @@ function FeedbacksPageInner() {
                       </div>
                     </TableCell>
                     <TableCell className="py-3.5 px-5">
-                      <p className="text-xs text-slate-500 line-clamp-2 max-w-[150px]" title={(fb as any).comment || fb.order?.special_notes || "-"}>
-                        {(fb as any).comment || fb.order?.special_notes || "-"}
+                      <p className="text-xs text-slate-500 line-clamp-2 max-w-[200px]" title={[fb.suggestion, fb.criticism, fb.issue].filter(Boolean).join(" | ") || "-"}>
+                        {[fb.suggestion, fb.criticism, fb.issue].filter(Boolean).join(" | ") || "-"}
                       </p>
                     </TableCell>
                     <TableCell className="py-3.5 px-5">

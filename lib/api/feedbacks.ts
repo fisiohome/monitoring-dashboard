@@ -70,6 +70,9 @@ export interface Feedback {
   appearance_rating: number;
   average_rating: number;
   service_duration_sufficient: string;
+  suggestion?: string;
+  criticism?: string;
+  issue?: string;
   created_by: string;
   created_at: string;
   updated_at: string;
