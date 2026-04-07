@@ -82,6 +82,8 @@ export interface FetchFeedbacksParams {
   patient_name?: string;
   start_date?: string; // YYYY-MM-DD
   end_date?: string; // YYYY-MM-DD
+  score?: string;
+  has_comment?: string;
   page?: number;
   limit?: number;
 }
