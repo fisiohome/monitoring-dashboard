@@ -59,14 +59,14 @@ function AppointmentsPageInner() {
           <ExportExcelButton
             data={appointments.map((apt: any) => ({
               ...apt,
-              "SOAP Link": `${process.env.NEXT_PUBLIC_SOAP_BASE_URL || "https://karpis.fisiohome.id"}/bookings/${apt.id}/soap`,
+              "SOAP Link": `${process.env.NEXT_PUBLIC_SOAP_BASE_URL || "https://karpis.fisiohome.id"}/bookings/${apt.id}/soap?bypass_evidence=true`,
             }))}
             fileName="Appointments"
             onFetchAll={async (onProgress) => {
               const all = await handleExportAll(onProgress);
               return all.map((apt: any) => ({
                 ...apt,
-                "SOAP Link": `${process.env.NEXT_PUBLIC_SOAP_BASE_URL || "https://karpis.fisiohome.id"}/bookings/${apt.id}/soap`,
+                "SOAP Link": `${process.env.NEXT_PUBLIC_SOAP_BASE_URL || "https://karpis.fisiohome.id"}/bookings/${apt.id}/soap?bypass_evidence=true`,
               }));
             }}
           />

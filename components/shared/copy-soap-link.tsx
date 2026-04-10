@@ -16,7 +16,7 @@ export function CopySoapLink({
     e.stopPropagation();
     const baseUrl =
       process.env.NEXT_PUBLIC_SOAP_BASE_URL || "https://karpis.fisiohome.id";
-    const url = `${baseUrl}/bookings/${appointmentId}/soap`;
+    const url = `${baseUrl}/bookings/${appointmentId}/soap?bypass_evidence=true`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
