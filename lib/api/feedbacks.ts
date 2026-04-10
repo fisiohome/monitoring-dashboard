@@ -70,6 +70,9 @@ export interface Feedback {
   appearance_rating: number;
   average_rating: number;
   service_duration_sufficient: string;
+  suggestion?: string;
+  criticism?: string;
+  issue?: string;
   created_by: string;
   created_at: string;
   updated_at: string;
@@ -82,6 +85,8 @@ export interface FetchFeedbacksParams {
   patient_name?: string;
   start_date?: string; // YYYY-MM-DD
   end_date?: string; // YYYY-MM-DD
+  score?: string;
+  has_comment?: string;
   page?: number;
   limit?: number;
 }

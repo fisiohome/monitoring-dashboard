@@ -21,6 +21,8 @@ export function useFeedbacks() {
   const patientName = get("patient_name");
   const startDate = get("start_date");
   const endDate = get("end_date");
+  const score = get("score");
+  const hasComment = get("has_comment");
 
   useEffect(() => {
     async function loadFeedbacks() {
@@ -34,6 +36,8 @@ export function useFeedbacks() {
           ...(patientName && { patient_name: patientName }),
           ...(startDate && { start_date: formatDateFilter(startDate) }),
           ...(endDate && { end_date: formatDateFilter(endDate, true) }),
+          ...(score && { score }),
+          ...(hasComment && { has_comment: hasComment }),
         };
 
         const response = await fetchFeedbacks(params);
@@ -67,9 +71,11 @@ export function useFeedbacks() {
         therapistName ||
         patientName ||
         startDate ||
-        endDate
+        endDate ||
+        score ||
+        hasComment
       ),
-    [registrationNumber, therapistName, patientName, startDate, endDate]
+    [registrationNumber, therapistName, patientName, startDate, endDate, score, hasComment]
   );
 
   return {
