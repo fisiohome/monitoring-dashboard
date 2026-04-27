@@ -35,7 +35,7 @@ const MOCK_DRAFTS: Partial<AppointmentDraft>[] = [
   {
     id: "157",
     requestCode: "-", 
-    status: "PENDING",
+    status: "APPROVED",
     updatedAt: "2026-04-20T09:00:00.000Z",
     service: { name: "FISIOHOME", schedule: "2026-04-20T09:00:00.000Z" },
     patient: { name: "Yosua Satrio Wicaksono", phone: "+628172367127" } as any,
@@ -51,7 +51,7 @@ const MOCK_DRAFTS: Partial<AppointmentDraft>[] = [
   {
     id: "159",
     requestCode: "KA50509",
-    status: "PENDING",
+    status: "IN_PROGRESS",
     updatedAt: "2026-04-22T09:00:00.000Z",
     service: { name: "FISIOHOME SPECIAL TIER", schedule: "2026-04-22T09:00:00.000Z" },
     patient: { name: "Said", phone: "+6287766556655" } as any,
