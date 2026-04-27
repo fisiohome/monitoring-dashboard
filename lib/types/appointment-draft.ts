@@ -1,57 +1,19 @@
-/**
- * Appointment draft detail as returned by
- * GET /api/v1/dashboard/appointment_drafts/:id
- */
-export interface AppointmentDraft {
-  /* ---------- Informasi Utama ---------- */
-  id: string;                 // Draft ID (primary key)
-  requestCode: string;        // Human-readable code shown in UI list
-  status: DraftStatus;        // Workflow status
-  statusReason: string | null;
-  lastStep: string;
-  updatedAt: string;          // ISO-8601 timestamp
-
-  /* ---------- Informasi Pasien & Klien ---------- */
-  patient: PersonContact;     // Pasien (jika pasien = klien, cukup isi satu)
-  client?: PersonContact;     // Opsional, jika ada entitas “pemesan” terpisah
-
-  /* ---------- Informasi Lokasi ---------- */
-  location: AddressBlock;
-
-  /* ---------- Informasi Layanan & Jadwal ---------- */
-  service: {
-    name: string;             // Nama layanan / paket
-    schedule: string;         // ISO-8601 datetime (jadwal kunjungan)
-    note?: string;            // Catatan tambahan (optional)
-  };
-
-  /* ---------- Informasi PIC (Admin) ---------- */
-  pic: PersonContact;
-}
-
-/* ===== Supporting Types ===== */
-
 export type DraftStatus =
-  | 'PENDING'
-  | 'IN_PROGRESS'
-  | 'APPROVED'
-  | 'REJECTED'
-  | 'CANCELLED'
-  | 'COMPLETED';
+  | "PENDING"
+  | "IN_PROGRESS"
+  | "APPROVED"
+  | "REJECTED"
+  | "CANCELLED"
+  | "COMPLETED"
+  | "EXPIRED";
 
 export interface PersonContact {
   name: string;
   phone: string;
   email?: string;
   gender?: string;
-  age?: number;         
-  dateOfBirth?: string;  
-  medicalRecord: {
-    condition: string;
-    history: string;
-    onsetDate: string;
-    complaint: string;
-  };
+  age?: number;
+  dateOfBirth?: string;
 }
 
 export interface AddressBlock {
@@ -59,4 +21,41 @@ export interface AddressBlock {
   city: string;
   province: string;
   postalCode: string;
+}
+
+export interface AppointmentDraft {
+  id: string;
+  requestCode: string;
+  status: DraftStatus;
+  statusReason: string | null;
+  lastStep: string;
+  createdAt: string;
+  updatedAt: string;
+  expiredAt?: string;
+  patient: PersonContact;
+  client?: PersonContact;
+  location: AddressBlock;
+  service: {
+    name: string;
+    schedule: string;
+    note?: string;
+    package?: {
+      name: string;
+      numberOfVisit: number;
+    };
+  };
+  medicalRecord: {
+    condition: string;
+    history: string;
+    onsetDate: string;
+    complaint: string;
+  };
+  additionalSettings: {
+    voucherCode?: string;
+    referralSource?: string;
+    customReferralSource?: string;
+    partnerName?: string;
+    isPartnerBooking?: boolean;
+  };
+  pic: PersonContact;
 }

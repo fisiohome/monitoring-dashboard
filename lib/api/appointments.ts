@@ -44,10 +44,6 @@ export async function fetchAppointments(params?: FetchAppointmentsParams) {
 }
 
 export async function fetchAppointmentById(id: string) {
-<<<<<<< HEAD
-  return apiFetch<any>(`/api/v1/appointments/${id}`);
-}
-=======
   // --- PERBAIKAN MULAI DARI SINI ---
   // Mencegah Next.js salah mengira path/URL sebagai ID
   if (id === "appointment-drafts" || id === "create" || !id) {
@@ -58,4 +54,3 @@ export async function fetchAppointmentById(id: string) {
 
   return apiFetch<any>(`/api/v1/appointments/${id}`);
 }
->>>>>>> db49d30 (nambahkan detail appoinment draft)
