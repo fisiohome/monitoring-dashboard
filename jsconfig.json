@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": ".",              // akar proyek
-    "paths": {
-      "@/*": ["./*"],            // alias global
-      "@types/*": ["types/*"]    // alias khusus folder types (opsional)
-    }
-  }
-}
