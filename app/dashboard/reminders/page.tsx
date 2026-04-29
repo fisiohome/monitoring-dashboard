@@ -229,7 +229,15 @@ function RemindersPageInner() {
                     </TableCell>
                     <TableCell className="py-3.5 px-5 text-sm text-slate-600">
                       {item.appt_date_time_wib
-                        ? format(new Date(item.appt_date_time_wib), "PPP p")
+                        ? format(
+                            new Date(
+                              item.appt_date_time_wib.replace(
+                                /(Z|[+-]\d{2}:?\d{2})$/i,
+                                ""
+                              )
+                            ),
+                            "PPP p"
+                          )
                         : "—"}
                     </TableCell>
                   </TableRow>

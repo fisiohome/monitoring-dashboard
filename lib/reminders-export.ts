@@ -58,13 +58,13 @@ export async function exportRemindersCustom(data: ReminderDataItem[], fileName: 
     let timeStr = "—";
 
     if (row.appt_date_time_wib) {
-      const dt = new Date(row.appt_date_time_wib);
-      const utcMs = dt.getTime() + (dt.getTimezoneOffset() * 60000);
-      const wibMs = utcMs + (7 * 3600000);
-      const wibDt = new Date(wibMs);
+      // The backend returns the time values already in WIB, but often with a UTC 'Z' or offset attached.
+      // We strip any timezone suffix so JS parses it literally as a local date.
+      const cleanDateStr = row.appt_date_time_wib.replace(/(Z|[+-]\d{2}:?\d{2})$/i, "");
+      const dt = new Date(cleanDateStr);
       
-      dateStr = format(wibDt, "dd-MM-yyyy");
-      timeStr = format(wibDt, "HH:mm");
+      dateStr = format(dt, "dd-MM-yyyy");
+      timeStr = format(dt, "HH:mm");
     }
 
     statusCounts[row.status] = (statusCounts[row.status] || 0) + 1;
