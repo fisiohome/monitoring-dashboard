@@ -122,3 +122,17 @@ export interface PaymentReport {
 }
 
 export type SortOrder = "asc" | "desc";
+
+export interface ReminderDataItem {
+  therapist_name: string;
+  therapist_type: "internal" | "external";
+  therapist_email: string;
+  status: string;
+  appt_date_time_wib: string;
+}
+
+export interface ReminderDataResponse {
+  date: string;
+  therapist_type: "internal" | "external" | "both";
+  items: ReminderDataItem[];
+}
