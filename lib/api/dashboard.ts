@@ -5,6 +5,7 @@ import {
   DashboardSummary,
   DailyMetrics,
   PaymentReport,
+  ReminderDataResponse,
 } from "./types";
 
 export async function fetchDashboardSummary(): Promise<DashboardSummary> {
@@ -27,5 +28,26 @@ export async function fetchPaymentReport(params?: {
     : "";
   return apiFetch<PaymentReport>(
     `/api/v1/dashboard/payment-report${queryString ? `?${queryString}` : ""}`,
+  );
+}
+
+export interface FetchReminderDataParams {
+  date?: string;
+  therapist_type?: "internal" | "external" | "both";
+  page?: number;
+  limit?: number;
+}
+
+export async function fetchReminderData(params?: FetchReminderDataParams) {
+  const query = params
+    ? new URLSearchParams(
+        Object.entries(params).reduce((acc, [key, value]) => {
+          if (value !== undefined) acc[key] = String(value);
+          return acc;
+        }, {} as Record<string, string>)
+      ).toString()
+    : "";
+  return apiFetch<ReminderDataResponse & { meta?: any }>(
+    `/api/v1/dashboard/reminder-data${query ? `?${query}` : ""}`
   );
 }

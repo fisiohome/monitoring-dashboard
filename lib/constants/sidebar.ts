@@ -26,6 +26,7 @@ const menuItems: MenuGroup[] = [
     items: [
       { icon: LayoutGrid, label: "Overview", href: "/dashboard" },
       { icon: BarChart2, label: "Funnel", href: "/dashboard/funnel" },
+      { icon: Calendar, label: "Reminders", href: "/dashboard/reminders" },
     ],
   },
   {
