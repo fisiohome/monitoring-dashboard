@@ -127,12 +127,16 @@ export interface ReminderDataItem {
   therapist_name: string;
   therapist_type: "internal" | "external";
   therapist_email: string;
+  patient_name: string;
   status: string;
   appt_date_time_wib: string;
 }
 
 export interface ReminderDataResponse {
   date: string;
+  start_date: string;
+  end_date: string;
+  patient_name: string;
   therapist_type: "internal" | "external" | "both";
   items: ReminderDataItem[];
 }

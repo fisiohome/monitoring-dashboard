@@ -33,6 +33,9 @@ export async function fetchPaymentReport(params?: {
 
 export interface FetchReminderDataParams {
   date?: string;
+  start_date?: string;
+  end_date?: string;
+  patient_name?: string;
   therapist_type?: "internal" | "external" | "both";
   page?: number;
   limit?: number;
