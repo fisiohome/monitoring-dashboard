@@ -27,6 +27,7 @@ export async function exportRemindersCustom(data: ReminderDataItem[], fileName: 
     { header: "No", key: "no", width: 5 },
     { header: "Therapist Name", key: "name", width: 35 },
     { header: "Therapist Type", key: "type", width: 16 },
+    { header: "Patient Name", key: "patient", width: 35 },
     { header: "Status", key: "status", width: 28 },
     { header: "Appt Date (WIB)", key: "date", width: 20 },
     { header: "Appt Time (WIB)", key: "time", width: 18 }
@@ -73,13 +74,14 @@ export async function exportRemindersCustom(data: ReminderDataItem[], fileName: 
       no: idx + 1,
       name: row.therapist_name || "Unknown",
       type: row.therapist_type || "—",
+      patient: row.patient_name || "—",
       status: row.status || "—",
       date: dateStr,
       time: timeStr
     });
 
     const rowFill = statusFills[row.status] || defaultFill;
-    const aligns: Array<"center" | "left"> = ["center", "left", "center", "center", "center", "center"];
+    const aligns: Array<"center" | "left"> = ["center", "left", "center", "left", "center", "center", "center"];
 
     r.eachCell((cell, colNumber) => {
       cell.font = { name: "Arial", size: 10 };

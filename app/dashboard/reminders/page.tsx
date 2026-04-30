@@ -24,10 +24,22 @@ import { toast } from "sonner";
 function RemindersPageInner() {
   const { get, set } = useFilterParams();
 
-  // Set default date to tomorrow for reminders if not specified
+  // Set default date to tomorrow for reminders only if no date-related filters are present
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const dateStr = get("date", format(tomorrow, "yyyy-MM-dd"));
+  const defaultDateStr = format(tomorrow, "yyyy-MM-dd");
+
+  const dateStr = get("date", "");
+  const startDateStr = get("start_date", "");
+  const endDateStr = get("end_date", "");
+  const patientNameStr = get("patient_name", "");
+
+  // On mount, if no date filters are present, set default to tomorrow
+  useEffect(() => {
+    if (!get("date") && !get("start_date") && !get("end_date")) {
+      set({ date: defaultDateStr });
+    }
+  }, []);
 
   const therapistType = get("therapist_type", "both") as
     | "internal"
@@ -41,12 +53,31 @@ function RemindersPageInner() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
+  // Debounce for patient_name
+  const [localPatientName, setLocalPatientName] = useState(patientNameStr);
+
+  useEffect(() => {
+    setLocalPatientName(patientNameStr);
+  }, [patientNameStr]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localPatientName !== patientNameStr) {
+        set({ patient_name: localPatientName, page: "1" });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [localPatientName, set, patientNameStr]);
+
   useEffect(() => {
     async function loadData() {
       setLoading(true);
       try {
         const res = await fetchReminderData({
           date: dateStr,
+          start_date: startDateStr,
+          end_date: endDateStr,
+          patient_name: patientNameStr,
           therapist_type: therapistType,
           page,
           limit,
@@ -72,7 +103,7 @@ function RemindersPageInner() {
     }
 
     loadData();
-  }, [dateStr, therapistType, page, limit]);
+  }, [dateStr, startDateStr, endDateStr, patientNameStr, therapistType, page, limit]);
 
   const handleExportAll = async (
     onProgress?: (loaded: number, total: number) => void,
@@ -81,6 +112,9 @@ function RemindersPageInner() {
       fetchReminderData,
       {
         date: dateStr,
+        start_date: startDateStr,
+        end_date: endDateStr,
+        patient_name: patientNameStr,
         therapist_type: therapistType,
       },
       "items",
@@ -110,8 +144,52 @@ function RemindersPageInner() {
           <input
             type="date"
             value={dateStr}
-            onChange={(e) => set({ date: e.target.value, page: "1" })}
+            onChange={(e) =>
+              set({
+                date: e.target.value,
+                start_date: null,
+                end_date: null,
+                page: "1",
+              })
+            }
             className="text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400 transition"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            Start Date
+          </label>
+          <input
+            type="date"
+            value={startDateStr}
+            onChange={(e) => set({ start_date: e.target.value, date: null, page: "1" })}
+            className="text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400 transition"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            End Date
+          </label>
+          <input
+            type="date"
+            value={endDateStr}
+            onChange={(e) => set({ end_date: e.target.value, date: null, page: "1" })}
+            className="text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400 transition"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            Patient Name
+          </label>
+          <input
+            type="text"
+            placeholder="Search patient..."
+            value={localPatientName}
+            onChange={(e) => setLocalPatientName(e.target.value)}
+            className="text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400 transition w-48"
           />
         </div>
 
@@ -152,6 +230,7 @@ function RemindersPageInner() {
                   "Therapist Name",
                   "Email",
                   "Type",
+                  "Patient Name",
                   "Status",
                   "Appointment Time",
                 ].map((h) => (
@@ -168,7 +247,7 @@ function RemindersPageInner() {
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i} className="border-b border-slate-50">
-                    {Array.from({ length: 5 }).map((_, j) => (
+                    {Array.from({ length: 6 }).map((_, j) => (
                       <TableCell key={j} className="py-3.5 px-5">
                         <Skeleton className="h-4 w-full" />
                       </TableCell>
@@ -178,7 +257,7 @@ function RemindersPageInner() {
               ) : data.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={6}
                     className="h-40 text-center text-sm text-slate-400"
                   >
                     No reminders found for the selected date and filters.
@@ -213,6 +292,9 @@ function RemindersPageInner() {
                       >
                         {item.therapist_type}
                       </span>
+                    </TableCell>
+                    <TableCell className="py-3.5 px-5 text-sm font-medium text-slate-700">
+                      {item.patient_name || "—"}
                     </TableCell>
                     <TableCell className="py-3.5 px-5">
                       <span
