@@ -6,6 +6,7 @@ import {
   Users,
   MessageSquare,
   LogOut,
+  FileText, // <-- Tambahkan icon FileText untuk drafts
 } from "lucide-react";
 
 interface MenuItem {
@@ -34,6 +35,8 @@ const menuItems: MenuGroup[] = [
     items: [
       { icon: CheckSquare, label: "Orders", href: "/dashboard/orders" },
       { icon: Users, label: "Appointments", href: "/dashboard/appointments" },
+      // 👇 INI MENU BARU YANG DITAMBAHKAN DENGAN URL YANG BENAR 👇
+      { icon: FileText, label: "Appointment Drafts", href: "/dashboard/appointment-drafts" },
       { icon: MessageSquare, label: "Feedback", href: "/dashboard/feedbacks" },
       { icon: Calendar, label: "Reschedule", href: "/dashboard/reschedule" },
     ],

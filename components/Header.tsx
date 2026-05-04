@@ -17,6 +17,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import Cookies from "js-cookie";
 import { handleLogout as performLogout } from "@/lib/api/client";
 
+// IMPORT CLIENTONLY
+import ClientOnly from "@/components/ClientOnly"; 
+
 const routeLabels: Record<string, string> = {
   dashboard: "Overview",
   orders: "Orders",
@@ -121,52 +124,54 @@ export function Header() {
         {/* Vertical divider */}
         <div className="h-6 w-px bg-slate-200 hidden md:block" />
 
-        {/* User dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2.5 rounded-2xl pl-1.5 pr-3 py-1.5 hover:bg-slate-100/80 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#6200EE]/50 group">
-              <Avatar className="h-7 w-7 ring-2 ring-slate-100 shrink-0 transition-all duration-300 group-hover:ring-[#6200EE]/30 group-hover:scale-105 shadow-sm">
-                <AvatarFallback className="bg-linear-to-br from-[#6200EE] to-[#9333EA] text-white text-[10px] font-bold">
-                  {getInitials(userName)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="hidden md:flex flex-col items-start translate-y-px">
-                <span className="text-[12px] font-semibold text-slate-800 leading-tight">
-                  {userName}
-                </span>
-                <span className="text-[10px] font-medium text-slate-500 leading-tight truncate max-w-35 mt-0.5">
-                  {userEmail}
-                </span>
-              </div>
-            </button>
-          </DropdownMenuTrigger>
+        {/* User dropdown wrapped in ClientOnly */}
+        <ClientOnly>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-2.5 rounded-2xl pl-1.5 pr-3 py-1.5 hover:bg-slate-100/80 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#6200EE]/50 group">
+                <Avatar className="h-7 w-7 ring-2 ring-slate-100 shrink-0 transition-all duration-300 group-hover:ring-[#6200EE]/30 group-hover:scale-105 shadow-sm">
+                  <AvatarFallback className="bg-linear-to-br from-[#6200EE] to-[#9333EA] text-white text-[10px] font-bold">
+                    {getInitials(userName)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="hidden md:flex flex-col items-start translate-y-px">
+                  <span className="text-[12px] font-semibold text-slate-800 leading-tight">
+                    {userName}
+                  </span>
+                  <span className="text-[10px] font-medium text-slate-500 leading-tight truncate max-w-35 mt-0.5">
+                    {userEmail}
+                  </span>
+                </div>
+              </button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent
-            align="end"
-            sideOffset={8}
-            className="w-60 rounded-2xl border border-slate-200/80 bg-white/95 backdrop-blur-xl shadow-xl shadow-black/4 p-2 overflow-hidden"
-          >
-            <DropdownMenuLabel className="px-3 py-2 rounded-xl">
-              <p className="text-[13px] font-semibold text-slate-900 tracking-tight">{userName}</p>
-              <p className="text-[11px] text-slate-500 font-medium mt-0.5 truncate">
-                {userEmail}
-              </p>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator className="my-1 bg-slate-100" />
-            <DropdownMenuItem className="rounded-xl gap-2.5 px-3 py-2 cursor-pointer text-[12px] font-medium text-slate-600 hover:text-slate-900 focus:text-slate-900 hover:bg-slate-50 focus:bg-slate-50 transition-colors">
-              <User className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-              Profile settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-1 bg-slate-100" />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="rounded-xl gap-2.5 px-3 py-2 cursor-pointer text-[12px] font-medium text-red-600 hover:text-red-700 focus:text-red-700 hover:bg-red-50 focus:bg-red-50 transition-colors group"
+            <DropdownMenuContent
+              align="end"
+              sideOffset={8}
+              className="w-60 rounded-2xl border border-slate-200/80 bg-white/95 backdrop-blur-xl shadow-xl shadow-black/4 p-2 overflow-hidden"
             >
-              <LogOut className="h-3.5 w-3.5 shrink-0 text-red-500 group-hover:text-red-600 group-focus:text-red-600" />
-              Log out securely
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuLabel className="px-3 py-2 rounded-xl">
+                <p className="text-[13px] font-semibold text-slate-900 tracking-tight">{userName}</p>
+                <p className="text-[11px] text-slate-500 font-medium mt-0.5 truncate">
+                  {userEmail}
+                </p>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="my-1 bg-slate-100" />
+              <DropdownMenuItem className="rounded-xl gap-2.5 px-3 py-2 cursor-pointer text-[12px] font-medium text-slate-600 hover:text-slate-900 focus:text-slate-900 hover:bg-slate-50 focus:bg-slate-50 transition-colors">
+                <User className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                Profile settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-1 bg-slate-100" />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="rounded-xl gap-2.5 px-3 py-2 cursor-pointer text-[12px] font-medium text-red-600 hover:text-red-700 focus:text-red-700 hover:bg-red-50 focus:bg-red-50 transition-colors group"
+              >
+                <LogOut className="h-3.5 w-3.5 shrink-0 text-red-500 group-hover:text-red-600 group-focus:text-red-600" />
+                Log out securely
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </ClientOnly>
       </div>
     </header>
   );
